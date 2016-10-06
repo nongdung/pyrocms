@@ -1,4 +1,4 @@
 <?php
-$lang['products:categories']  = 'Categories';
-$lang['products:products']    = 'Products';
-$lang['products:Create']      = 'Create ';
+$lang['product:categories']  = 'Categories';
+$lang['product:products']    = 'Products';
+$lang['product:create']      = 'Create ';
