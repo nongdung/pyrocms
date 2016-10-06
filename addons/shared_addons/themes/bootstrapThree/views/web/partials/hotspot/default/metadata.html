@@ -1,0 +1,33 @@
+<title>{{ template:title }} | {{ settings:site_name }}</title>
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<base href="{{ url:base }}"/>
+
+{{ theme:favicon file="favicons/favicon.ico"}}
+{{ theme:favicon file="favicons/apple-touch-icon.png" rel="apple-touch-icon" }}
+{{ theme:favicon file="favicons/apple-touch-icon-precomposed.png" rel="apple-touch-icon" }}
+{{ theme:favicon file="favicons/apple-touch-icon-57x57-precomposed.png" rel="apple-touch-icon" }}
+{{ theme:favicon file="favicons/apple-touch-icon-72x72-precomposed.png" rel="apple-touch-icon" }}
+{{ theme:favicon file="favicons/apple-touch-icon-114x114-precomposed.png" rel="apple-touch-icon" }}
+
+<!--[if lt IE 9]>
+	{{ theme:js file="html5.js" }}
+<![endif]-->
+
+{{ theme:css file="bootstrap.min.css" }}
+
+<!--[if lt IE 9]>{{ theme:js file="ie8-responsive-file-warning.js" }}<![endif]-->
+{{ theme:js file="ie10-viewport-bug-workaround.js" }}
+{{ theme:js file="ie-emulation-modes-warning.js" }}
+<!--[if lt IE 9]>
+	{{ theme:js file="html5shiv.min.js" }}
+	{{ theme:js file="respond.min.js" }}
+<![endif]-->
+
+{{ theme:js file="jquery.min.js" }}
+{{ theme:js file="bootstrap.min.js" }}
+{{ asset:render }}
+{{ template:metadata }}

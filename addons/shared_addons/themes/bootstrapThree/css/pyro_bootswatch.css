@@ -1,0 +1,46 @@
+body {  padding: 70px 0px;}
+
+html, body, #container { height: 100%; }
+body > #container { height: auto; min-height: 100%; }
+
+#login-small {margin-top:10px; width: 200px; list-style-type:disc;}
+
+#login-small input{margin: 0px 15px; width: 170px;}
+
+
+.ckBox label
+{
+    display: block;
+    float: left;
+    padding-right: 10px;
+    white-space: nowrap;
+}
+
+.ckBox input
+{
+    vertical-align: middle;
+}
+
+.ckBox label span
+{
+    vertical-align: middle;
+}
+
+#commentPost input{ margin-top:10px;; width:60%; float: right;}
+
+#commentPost textarea{ margin-top:10px;; width:100%; float: right;}
+
+
+#footer {
+	
+text-align:right;	
+ clear: both;
+ position: relative;
+ z-index: 10;
+ height: 3em;
+ /*margin-top: -3em;*/
+ padding: 2em;
+ margin-bottom: 2em;
+
+
+}

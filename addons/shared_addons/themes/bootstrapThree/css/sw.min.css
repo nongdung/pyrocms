@@ -1,0 +1,20 @@
+.wifi-login{border-color:#fff;border-left:15px solid #fff;border-right:15px solid #fff}footer{background:url(../img/pattern3.png) repeat;padding:20px;color:#8a8c8c}footer a:hover{text-decoration:underline}#bottom-social,#copyright{text-align:center;margin-top:10px}.section-title,.widget h3{border-bottom:1px solid #8B8B8B;color:#8B8B8B;margin:0 0 10px;padding:0 0 8px;line-height:20px}.text-glow:active,.text-glow:focus,.text-glow:hover{text-shadow:1px 0 25px #fff;transition:width .3s ease 0s}.text-glow{transition:all .6s ease-in 0s}.responsive-video {position: relative;padding-bottom: 56.25%;padding-top: 60px; overflow: hidden;}.responsive-video iframe,.responsive-video object,.responsive-video embed {position: absolute;top: 0;left: 0;width: 100%;height: 100%;}
+#top {
+    margin-bottom: 15px;
+}
+#slogan {
+    padding: 15px;
+    height: 35px;
+}
+#slogan span {
+    border-left: 1px solid #ccc9c5;;
+    padding-left: 20px;
+    text-shadow: 1px 0 25px black;
+}
+.wifi-login-form button {
+    margin-bottom: 5px;
+}
+
+}
+
+}

@@ -1,0 +1,12 @@
+<div class="container">
+	<div class="row">
+			<div class="center-block pagination-centered text-center">
+				{{ if location_detail:footer_image:id }}      
+					{{ files:image id="{{ location_detail:footer_image:id }}" width="768" class="img-responsive center-block" mode="fit" }}
+				{{ endif }}
+			</div>
+			<div id="copyright" class="text-center">
+	            <p>&copy; {{ helper:date format="Y" }} {{ settings:site_name }}. All rights reserved </p> <span style="font-size: 0.7em;">Powered by <a class="text-glow" href="http://smartwifi.com.vn" rel="dofollow"><strong><span>SmartWifi</span></strong></a></span>
+	        </div>
+	</div>
+</div>
