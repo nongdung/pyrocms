@@ -21,7 +21,7 @@ class Module_Products extends Module{
                     'uri'   => 'admin/products',
                     'shortcuts' => array(
 			        'create'=>array(
-                            'name'  => 'product:Create',
+                            'name'  => 'product:create',
                             'uri'   => 'admin/products/create',
                             'class' => 'add',
                         ),
