@@ -231,9 +231,7 @@ $config['cache_path'] = '';
 |
 */
 
-
 $config['encryption_key'] = 'fP4F6Txexz3LcjhEzqWIPwcTu7o6lGcj5Z3rt5NiPq';
-
 
 /*
 |--------------------------------------------------------------------------
