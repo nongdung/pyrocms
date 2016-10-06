@@ -10,7 +10,7 @@ class Admin extends Admin_Controller{
     }
 
     public function index(){
-        $extra['title'] = 'lang:products:products';
+        $extra['title'] = 'lang:product:products';
         
         $extra['buttons'] = array(
             array(
