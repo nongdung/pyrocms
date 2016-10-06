@@ -49,15 +49,15 @@ class Module_Products extends Module{
 
         $this->streams->utilities->remove_namespace('products');
 
-        if( ! $product_id = $this->streams->streams->add_stream('Products','product','products',null)) return false;
+        if( ! $product_id = $this->streams->streams->add_stream('products','products','products','products_',null)) return false;
 
-        if( ! $category_id = $this->streams->streams->add_stream('Categories','category','products',null)) return false;
+        if( ! $category_id = $this->streams->streams->add_stream('categories','categories','products','products_',null)) return false;
 
-        if( ! $this->streams->streams->add_stream('Comments','comment','products',null)) return false;
+        if( ! $this->streams->streams->add_stream('comments','comment','products','products_',null)) return false;
 
-        if( ! $this->streams->streams->add_stream('Likes','like','products',null)) return false;
+        if( ! $this->streams->streams->add_stream('likes','like','products','products_',null)) return false;
 
-        if( ! $this->streams->streams->add_stream('Rates','rate','products',null)) return false;
+        if( ! $this->streams->streams->add_stream('rates','rate','products','products_',null)) return false;
 
         # add fields categories
         $fields_categories = array(
@@ -67,7 +67,7 @@ class Module_Products extends Module{
                 'namespace'   => 'products',
                 'type'        => 'text',
                 'extra'       => array('max_length' => 10),
-                'assign'      => 'category',
+                'assign'      => 'categories',
                 'title_colum' => true,
                 'required'    => true
             ), 
@@ -77,7 +77,7 @@ class Module_Products extends Module{
                 'namespace'   => 'products',
                 'type'        => 'text',
                 'extra'       => array('max_length' => 100),
-                'assign'      => 'category',
+                'assign'      => 'categories',
                 'title_colum' => true,
                 'required'    => true
             ), 
@@ -87,7 +87,7 @@ class Module_Products extends Module{
                 'namespace'   => 'products',
                 'type'        => 'text',
                 'extra'       => array('max_length' => 200),
-                'assign'      => 'category',
+                'assign'      => 'categories',
                 'title_colum' => true,
                 'required'    => true
             ), 
@@ -97,14 +97,14 @@ class Module_Products extends Module{
                 'namespace'     => 'products',
                 'type'          => 'image',
                 'extra'         => array('folder' => 1, 'allowed_types' => 'jpg|gif|png'),
-                'assign'        => 'category',
+                'assign'        => 'categories',
                 'required'      => true
             ),
 
         );
 
         $this->streams->fields->add_fields($fields_categories);
-        $this->streams->streams->update_stream('category', 'products',array(
+        $this->streams->streams->update_stream('categories', 'products',array(
             'view_options' => array(
                 'cat_id', 'c_name', 'c_description', 'c_image'
             ))
@@ -118,7 +118,7 @@ class Module_Products extends Module{
                 'namespace'     => 'products',
                 'type'          => 'text',
                 'extra'         => array('max_length' => 10),
-                'assign'        => 'product',
+                'assign'        => 'products',
                 'required'      => true
             ),
             array(
@@ -127,7 +127,7 @@ class Module_Products extends Module{
                 'namespace'     => 'products',
                 'type'          => 'text',
                 'extra'         => array('max_length' => 100),
-                'assign'        => 'product',
+                'assign'        => 'products',
                 'required'      => true
             ),
             array(
@@ -144,7 +144,7 @@ class Module_Products extends Module{
                 'slug'          => 'p_price',
                 'namespace'     => 'products',
                 'type'          => 'integer',
-                'assign'        => 'product',
+                'assign'        => 'products',
                 'required'      => true
             ),
             array(
@@ -152,7 +152,7 @@ class Module_Products extends Module{
                 'slug'          => 'p_highlight',
                 'namespace'     => 'products',
                 'type'          => 'integer',
-                'assign'        => 'product',
+                'assign'        => 'products',
                 'required'      => false
             ),
             array(
@@ -160,7 +160,7 @@ class Module_Products extends Module{
                 'slug'          => 'p_discount',
                 'namespace'     => 'products',
                 'type'          => 'integer',
-                'assign'        => 'product',
+                'assign'        => 'products',
                 'required'      => false
             ),
             array(
@@ -169,7 +169,7 @@ class Module_Products extends Module{
                 'namespace'     => 'products',
                 'type'          => 'text',
                 'extra'         => array('max_length' => 10),
-                'assign'        => 'product',
+                'assign'        => 'products',
                 'required'      => true
             ),
             array(
@@ -178,7 +178,7 @@ class Module_Products extends Module{
                 'namespace'     => 'products',
                 'type'          => 'wysiwyg',
                 'extra'         => array('editor_type' => 'advanced ', 'allow_tags' => 'y'),
-                'assign'        => 'product',
+                'assign'        => 'products',
                 'required'      => false
             ),
              array(
@@ -187,7 +187,7 @@ class Module_Products extends Module{
                 'namespace'     => 'products',
                 'type'          => 'wysiwyg',
                 'extra'         => array('editor_type' => 'advanced ', 'allow_tags' => 'y'),
-                'assign'        => 'product',
+                'assign'        => 'products',
                 'required'      => false
             ),
             array(
@@ -195,14 +195,14 @@ class Module_Products extends Module{
                 'slug'          => 'category_id',
                 'namespace'     => 'products',
                 'type'          => 'relationship',
-                'assign'        => 'product',
+                'assign'        => 'products',
                 'extra'         => array('choose_stream' => $category_id),
                 'required'      => true
             )
         );
 
         $this->streams->fields->add_fields($field_products);
-        $this->streams->streams->update_stream('product', 'products',array(
+        $this->streams->streams->update_stream('products', 'products',array(
             'view_options' => array(
                 'p_id', 'p_name', 'p_price','p_image', 'p_highlight', 'p_discount', 'p_unit', 'p_short_description','p_long_description', 'category_id'
             ))

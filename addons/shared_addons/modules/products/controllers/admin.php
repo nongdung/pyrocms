@@ -24,7 +24,7 @@ class Admin extends Admin_Controller{
             ),
         );
         
-        $this ->streams->cp->entries_table('product', 'products', null, 'admin/products/index', true, $extra);
+        $this ->streams->cp->entries_table('products', 'products', null, 'admin/products/index', true, $extra);
     }
     
     public function create(){
