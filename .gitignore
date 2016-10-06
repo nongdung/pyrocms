@@ -1,0 +1,18 @@
+*.class
+*.pyc
+*.pyo
+*.cache
+**/assets/cache/*.css
+**/assets/cache/*.js
+**/logs/*.php
+!**/cms/cache/*.html
+**/cms/cache/default/**
+
+!**/uploads/*.html
+!**/uploads/default/files/*.html
+**/uploads/default/files/**
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
