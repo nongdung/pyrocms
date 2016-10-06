@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+  <head>
+    {{ theme:partial name="metadata" }}
+  </head>
+<body class="bs-docs-home">
+	<a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+	{{ theme:partial name="hotspot_header" }}    
+    <div id="container" class="container">  
+     	
+    	{{ session:messages success="alert alert-success" notice="alert alert-block" error="alert alert-error" }}    	
+     	{{ theme:partial name="breadcrumbs"}}
+
+     	{{ template:body }}
+		{{ integration:analytics }}
+    </div>      
+   	{{ theme:partial name="footer" }}           
+</body>     
+</html>

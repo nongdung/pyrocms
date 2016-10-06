@@ -1,0 +1,59 @@
+<div class="container">
+	<div class="row">
+			<div id="carousel-sw-generic" class="carousel slide" data-ride="carousel">
+			  <ol class="carousel-indicators">
+			    <li data-target="#carousel-sw-generic" data-slide-to="0" class="active"></li>
+			    
+			    {{ if location_detail:header_image_2:image }}
+			    <li data-target="#carousel-sw-generic" data-slide-to="1"></li>
+			    {{ endif }}
+			    
+			    {{ if location_detail:header_image_3:image }}
+			    <li data-target="#carousel-sw-generic" data-slide-to="2"></li>
+			    {{ endif }}
+			  </ol>
+			
+			  <!-- Wrapper for slides -->
+			  <div class="carousel-inner" role="listbox">
+			  	
+			    <div class="item active">
+			    	{{ if location_detail:header_link_1 }}
+			    	<a href="{{ location_detail:header_link_1 }}" target="_blank">			      
+			    		{{ files:image id="{{ location_detail:header_image_1:id }}" width="1200" class="img-responsive center-block" mode="fit" }}
+			    	</a>
+			    	{{ else }}
+			    		{{ files:image id="{{ location_detail:header_image_1:id }}" width="1200" class="img-responsive center-block" mode="fit" }}
+			    	{{ endif }}
+			    </div>
+			    
+			    {{ if location_detail:header_image_2:image }}
+			    <div class="item">			      
+			    	{{ if location_detail:header_link_2 }}
+			    	<a href="{{ location_detail:header_link_2 }}" target="_blank">			      
+			    		{{ files:image id="{{ location_detail:header_image_2:id }}" width="1200" class="img-responsive center-block" mode="fit" }}
+			    	</a>
+			    	{{ else }}
+			    		{{ files:image id="{{ location_detail:header_image_2:id }}" width="1200" class="img-responsive center-block" mode="fit" }}
+			    	{{ endif }}
+			    </div>
+			    {{ endif}}
+			    
+			    {{ if location_detail:header_image_3:image }}
+			    <div class="item">
+			      <!--	
+			      <img class="img-responsive center-block" src="{{ location_detail:header_image_3:image }}" />
+			      -->
+			    	{{ if location_detail:header_link_3 }}
+			    	<a href="{{ location_detail:header_link_3 }}" target="_blank">			      
+			    		{{ files:image id="{{ location_detail:header_image_3:id }}" width="1200" class="img-responsive center-block" mode="fit" }}
+			    	</a>
+			    	{{ else }}
+			    		{{ files:image id="{{ location_detail:header_image_3:id }}" width="1200" class="img-responsive center-block" mode="fit" }}
+			    	{{ endif }}
+			    </div>
+			    {{ endif }}
+			  </div>
+			</div>
+	</div>
+</div>
+
