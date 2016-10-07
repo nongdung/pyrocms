@@ -20,7 +20,7 @@ class Module_Products extends Module{
                     'name'  => 'Products',
                     'uri'   => 'admin/products',
                     'shortcuts' => array(
-			        'create'=>array(
+			'create'=>array(
                             'name'  => 'product:create',
                             'uri'   => 'admin/products/create',
                             'class' => 'add',
@@ -33,7 +33,7 @@ class Module_Products extends Module{
                     'uri'   => 'admin/products/categories/index',
                     'shortcuts' => array(
                        'create'=>array(
-                            'name'  => 'product:Create',
+                            'name'  => 'product:create',
                             'uri'   => 'admin/products/categories/create',
                             'class' => 'add',
                         ),
