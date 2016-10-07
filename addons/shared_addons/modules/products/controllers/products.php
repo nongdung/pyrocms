@@ -36,11 +36,12 @@ class Products extends Public_Controller{
     {
     	if($this->input->get())
     	{
-    		$keyword 		 =  $this->input->get('keyword');
-    		$data['results'] =  $this->products_m->search($keyword);
+    		$keyword =  $this->input->get('keyword');
+    		$data    =  $this->products_m->search($keyword);
     	}
-    	print_r($data);
-    	#$this->load->view();
+    	$this->output
+        	 ->set_content_type('application/json')
+             ->set_output(json_encode($data));
     }
    
 }
