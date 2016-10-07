@@ -20,7 +20,7 @@ class Module_Products extends Module{
                     'name'  => 'Products',
                     'uri'   => 'admin/products',
                     'shortcuts' => array(
-			        'create'=>array(
+            			'create'=>array(
                             'name'  => 'product:create',
                             'uri'   => 'admin/products/create',
                             'class' => 'add',
@@ -33,7 +33,7 @@ class Module_Products extends Module{
                     'uri'   => 'admin/products/categories/index',
                     'shortcuts' => array(
                        'create'=>array(
-                            'name'  => 'category:create',
+                            'name'  => 'product:create',
                             'uri'   => 'admin/products/categories/create',
                             'class' => 'add',
                         ),
@@ -49,62 +49,60 @@ class Module_Products extends Module{
 
         $this->streams->utilities->remove_namespace('products');
 
-        if( ! $product_id = $this->streams->streams->add_stream('Products','product','products',null)) return false;
+        if( ! $product_id = $this->streams->streams->add_stream('products','products','products','products_',null)) return false;
 
-        if( ! $category_id = $this->streams->streams->add_stream('Categories','category','products',null)) return false;
+        if( ! $category_id = $this->streams->streams->add_stream('categories','categories','products','products_',null)) return false;
 
-        if( ! $this->streams->streams->add_stream('Comments','comment','products',null)) return false;
+        if( ! $this->streams->streams->add_stream('comments','comment','products','products_',null)) return false;
 
-        if( ! $this->streams->streams->add_stream('Likes','like','products',null)) return false;
+        if( ! $this->streams->streams->add_stream('likes','like','products','products_',null)) return false;
 
-        if( ! $this->streams->streams->add_stream('Rates','rate','products',null)) return false;
+        if( ! $this->streams->streams->add_stream('rates','rate','products','products_',null)) return false;
 
         # add fields categories
         $fields_categories = array(
             array(
-                'name'        => 'categories id',
+                'name'        => 'Categories Id',
                 'slug'        => 'cat_id',
                 'namespace'   => 'products',
                 'type'        => 'text',
                 'extra'       => array('max_length' => 10),
-                'assign'      => 'category',
-                'title_colum' => true,
+                'assign'      => 'categories',
                 'required'    => true
             ), 
             array(
-                'name'        => 'categories name',
+                'name'        => 'Categories Name',
                 'slug'        => 'c_name',
                 'namespace'   => 'products',
                 'type'        => 'text',
                 'extra'       => array('max_length' => 100),
-                'assign'      => 'category',
-                'title_colum' => true,
-                'required'    => true
+                'assign'       => 'categories',
+                'title_column' => true,
+                'required'     => true
             ), 
             array(
-                'name'        => 'categories description',
+                'name'        => 'Categories Description',
                 'slug'        => 'c_description',
                 'namespace'   => 'products',
                 'type'        => 'text',
                 'extra'       => array('max_length' => 200),
-                'assign'      => 'category',
-                'title_colum' => true,
+                'assign'      => 'categories',
                 'required'    => true
             ), 
             array(
-                'name'          => 'image',
+                'name'          => 'Image',
                 'slug'          => 'c_image',
                 'namespace'     => 'products',
                 'type'          => 'image',
                 'extra'         => array('folder' => 1, 'allowed_types' => 'jpg|gif|png'),
-                'assign'        => 'category',
+                'assign'        => 'categories',
                 'required'      => true
             ),
 
         );
 
         $this->streams->fields->add_fields($fields_categories);
-        $this->streams->streams->update_stream('category', 'products',array(
+        $this->streams->streams->update_stream('categories', 'products',array(
             'view_options' => array(
                 'cat_id', 'c_name', 'c_description', 'c_image'
             ))
@@ -113,25 +111,25 @@ class Module_Products extends Module{
         # add fields products
         $field_products = array(
             array(
-                'name'          => 'product id',
+                'name'          => 'Product Id',
                 'slug'          => 'p_id',
                 'namespace'     => 'products',
                 'type'          => 'text',
                 'extra'         => array('max_length' => 10),
-                'assign'        => 'product',
+                'assign'        => 'products',
                 'required'      => true
             ),
             array(
-                'name'          => 'product name',
+                'name'          => 'Product Name',
                 'slug'          => 'p_name',
                 'namespace'     => 'products',
                 'type'          => 'text',
                 'extra'         => array('max_length' => 100),
-                'assign'        => 'product',
+                'assign'        => 'products',
                 'required'      => true
             ),
             array(
-                'name'          => 'image',
+                'name'          => 'Image',
                 'slug'          => 'p_image',
                 'namespace'     => 'products',
                 'type'          => 'image',
@@ -140,76 +138,184 @@ class Module_Products extends Module{
                 'required'      => true
             ),
             array(
-                'name'          => 'price',
+                'name'          => 'Price',
                 'slug'          => 'p_price',
                 'namespace'     => 'products',
                 'type'          => 'integer',
-                'assign'        => 'product',
+                'assign'        => 'products',
                 'required'      => true
             ),
             array(
-                'name'          => 'highlight',
+                'name'          => 'Highlight',
                 'slug'          => 'p_highlight',
                 'namespace'     => 'products',
                 'type'          => 'integer',
-                'assign'        => 'product',
+                'assign'        => 'products',
                 'required'      => false
             ),
             array(
-                'name'          => 'discount',
+                'name'          => 'Discount',
                 'slug'          => 'p_discount',
                 'namespace'     => 'products',
                 'type'          => 'integer',
-                'assign'        => 'product',
+                'assign'        => 'products',
                 'required'      => false
             ),
             array(
-                'name'          => 'unit',
+                'name'          => 'Unit',
                 'slug'          => 'p_unit',
                 'namespace'     => 'products',
                 'type'          => 'text',
                 'extra'         => array('max_length' => 10),
-                'assign'        => 'product',
+                'assign'        => 'products',
                 'required'      => true
             ),
             array(
-                'name'          => 'short description',
+                'name'          => 'Short Description',
                 'slug'          => 'p_short_description',
                 'namespace'     => 'products',
                 'type'          => 'wysiwyg',
                 'extra'         => array('editor_type' => 'advanced ', 'allow_tags' => 'y'),
-                'assign'        => 'product',
+                'assign'        => 'products',
                 'required'      => false
             ),
              array(
-                'name'          => 'long description',
+                'name'          => 'Long Description',
                 'slug'          => 'p_long_description',
                 'namespace'     => 'products',
                 'type'          => 'wysiwyg',
                 'extra'         => array('editor_type' => 'advanced ', 'allow_tags' => 'y'),
-                'assign'        => 'product',
+                'assign'        => 'products',
                 'required'      => false
             ),
             array(
-                'name'          => 'category',
+                'name'          => 'Category',
                 'slug'          => 'category_id',
                 'namespace'     => 'products',
                 'type'          => 'relationship',
-                'assign'        => 'product',
+                'assign'        => 'products',
                 'extra'         => array('choose_stream' => $category_id),
                 'required'      => true
             )
         );
 
         $this->streams->fields->add_fields($field_products);
-        $this->streams->streams->update_stream('product', 'products',array(
+        $this->streams->streams->update_stream('products', 'products',array(
             'view_options' => array(
                 'p_id', 'p_name', 'p_price','p_image', 'p_highlight', 'p_discount', 'p_unit', 'p_short_description','p_long_description', 'category_id'
             ))
         );
 
         # add fields comments
-        #$fields_comments = array();
+        $fields_comments = array(
+            array(
+                'name'        => 'Comments',
+                'slug'        => 'comments',
+                'namespace'   => 'products',
+                'type'        => 'wysiwyg',
+                'extra'       => array('editor_type' => 'advanced', 'allow_tags' => 'y'),
+                'assign'      => 'comment',
+                'title_column' => true,
+                'required'    => false
+            ),
+            array(
+                'name'        => 'Product Id',
+                'slug'        => 'product_id_c',
+                'namespace'   => 'products',
+                'type'        => 'relationship',             
+                'extra'       => array('choose_stream' => $product_id),
+                'assign'      => 'comment',
+                'required'    => true
+            ),
+            array(
+                'name'        => 'Reply Id',
+                'slug'        => 'reply_id',
+                'namespace'   => 'products',
+                'type'        => 'wysiwyg',
+                'extra'       => array('editor_type' => 'advanced', 'allow_tags' => 'y'),
+                'assign'      => 'comment',
+                'required'    => false
+            ),
+            array(
+                'name'        => 'User Id',
+                'slug'        => 'user_id_c',
+                'namespace'   => 'products',
+                'type'        => 'integer',
+                'assign'      => 'comment',
+                'required'    => true
+            ),
+        );
+
+        $this->streams->fields->add_fields($fields_comments);
+        $this->streams->streams->update_stream('comment', 'products',array(
+            'view_options' => array(
+                'comments', 'user_id_c', 'reply_id' , 'product_id_c'
+            ))
+        );
+
+        # add fields like
+        $fields_likes = array(
+            array(
+                'name'        => 'Product Id',
+                'slug'        => 'product_id_l',
+                'namespace'   => 'products',
+                'type'        => 'relationship',          
+                'extra'       => array('choose_stream' => $product_id),
+                'assign'      => 'like',
+                'required'    => true
+            ),
+            array(
+                'name'        => 'User Id',
+                'slug'        => 'user_id_l',
+                'namespace'   => 'products',
+                'type'        => 'integer',
+                'assign'      => 'like',
+                'required'    => true
+            )
+        );
+
+        $this->streams->fields->add_fields($fields_likes);
+        $this->streams->streams->update_stream('like', 'products',array(
+            'view_options' => array(
+                'user_id_l', 'product_id_l'
+            ))
+        );
+
+        # add fields rate
+        $fields_rate = array(
+            array(
+                'name'        => 'Rates',
+                'slug'        => 'rates',
+                'namespace'   => 'products',
+                'type'        => 'integer',
+                'assign'      => 'rate',
+                'required'    => true
+            ),
+            array(
+                'name'        => 'Product Id',
+                'slug'        => 'product_id_r',
+                'namespace'   => 'products',
+                'type'        => 'relationship',
+                'extra'       => array('choose_stream' => $product_id),
+                'assign'      => 'rate',
+                'required'    => true
+            ),
+            array(
+                'name'        => 'User Id',
+                'slug'        => 'user_id_r',
+                'namespace'   => 'products',
+                'type'        => 'integer',
+                'assign'      => 'rate',
+                'required'    => true
+            )
+        );
+        $this->streams->fields->add_fields($fields_rate);
+        $this->streams->streams->update_stream('rate', 'products',array(
+            'view_options' => array(
+                'rates', 'user_id_r', 'product_id_r'
+            ))
+        );
+
         return true;
     }
 
