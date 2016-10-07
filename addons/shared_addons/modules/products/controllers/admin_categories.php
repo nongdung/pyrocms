@@ -14,7 +14,7 @@ class Admin_categories extends Admin_Controller{
     {
         $extra['title']   = 'lang:product:categories';
         
-        $extra['columns'] = array('cat_id', 'c_name', 'c_description', 'c_image');
+        $extra['columns'] = array('c_name', 'c_description', 'c_image');
 
         $extra['buttons'] = array(
             array(
@@ -40,7 +40,7 @@ class Admin_categories extends Admin_Controller{
             'success_message' => lang('Success'),
             'failure_message' => lang('Failed'),
             'title'           => 'New Product',
-            'columns'         => array('cat_id', 'c_name', 'c_description', 'c_image')
+            'columns'         => array('c_name', 'c_description', 'c_image')
          );
 
         $this->streams->cp->entry_form('categories', 'products', 'new', null, true, $extra);

@@ -40,7 +40,7 @@ class Admin extends Admin_Controller{
             'success_message' => lang('Success'),
             'failure_message' => lang('Failed'),
             'title'           => 'New Product',
-            
+           
          );
 
         $this->streams->cp->entry_form('products', 'products', 'new', null, true, $extra);
