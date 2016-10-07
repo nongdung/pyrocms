@@ -62,15 +62,6 @@ class Module_Products extends Module{
         # add fields categories
         $fields_categories = array(
             array(
-                'name'        => 'Categories Id',
-                'slug'        => 'cat_id',
-                'namespace'   => 'products',
-                'type'        => 'text',
-                'extra'       => array('max_length' => 10),
-                'assign'      => 'categories',
-                'required'    => true
-            ), 
-            array(
                 'name'        => 'Categories Name',
                 'slug'        => 'c_name',
                 'namespace'   => 'products',
@@ -84,8 +75,8 @@ class Module_Products extends Module{
                 'name'        => 'Categories Description',
                 'slug'        => 'c_description',
                 'namespace'   => 'products',
-                'type'        => 'text',
-                'extra'       => array('max_length' => 200),
+                'type'        => 'wysiwyg',
+                'extra'       => array('folder' => 1, 'allowed_types' => 'jpg|gif|png'),
                 'assign'      => 'categories',
                 'required'    => true
             ), 
@@ -98,13 +89,12 @@ class Module_Products extends Module{
                 'assign'        => 'categories',
                 'required'      => true
             ),
-
         );
 
         $this->streams->fields->add_fields($fields_categories);
         $this->streams->streams->update_stream('categories', 'products',array(
             'view_options' => array(
-                'cat_id', 'c_name', 'c_description', 'c_image'
+                'c_name', 'c_description', 'c_image'
             ))
         );
 
