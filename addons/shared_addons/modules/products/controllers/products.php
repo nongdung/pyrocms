@@ -1,6 +1,6 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed');
 
-class Product extends Public_Controller{
+class Products extends Public_Controller{
     
     public function __construct(){
         parent::__construct();
@@ -9,7 +9,7 @@ class Product extends Public_Controller{
     }
     
     public function index(){
-        
+        echo '123';
     }
 }
 
