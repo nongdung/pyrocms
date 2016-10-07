@@ -33,7 +33,7 @@ class Module_Products extends Module{
                     'uri'   => 'admin/products/categories/index',
                     'shortcuts' => array(
                        'create'=>array(
-                            'name'  => 'product:Create',
+                            'name'  => 'category:create',
                             'uri'   => 'admin/products/categories/create',
                             'class' => 'add',
                         ),
