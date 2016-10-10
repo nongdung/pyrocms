@@ -8,6 +8,7 @@ class Admin extends Admin_Controller{
         parent::__construct();
         $this->load->driver('Streams');
         $this->lang->load('products');
+        $this->load->model("products_m");
     }
 
     public function index()
@@ -39,9 +40,8 @@ class Admin extends Admin_Controller{
             'return'          => 'admin/products',
             'success_message' => lang('Success'),
             'failure_message' => lang('Failed'),
-            'title'           => 'New Product',
-           
-         );
+            'title'           => 'New Product',         
+        );
 
         $this->streams->cp->entry_form('products', 'products', 'new', null, true, $extra);
     }
