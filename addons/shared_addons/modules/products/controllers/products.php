@@ -21,7 +21,7 @@ class Products extends Public_Controller{
     public function get_products()
     {
     	$data = $this->products_m->get_products();
-        #print_r($data);
+    	       
     }
 
     # hiển thị comments

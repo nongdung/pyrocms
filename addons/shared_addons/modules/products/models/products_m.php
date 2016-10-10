@@ -38,7 +38,6 @@ class Products_m extends MY_Model
     # tìm kiếm theo products
     public function search($keyword)
     {
-
 	    $this->db->like('p_name',$keyword);
 	    $this->db->or_like('p_id',$keyword);
 	    $query = $this->db->get('products_products');
