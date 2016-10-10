@@ -13,70 +13,29 @@ body{
     background-color:#DCDCDC;
 }
 
-
+img{
+    width:100%;
+    height:100px;
+}
 
 .jumbotron .h1, .jumbotron h1 {
     color: #F8F8FF;
 }
 
-.dropdown.dropdown-lg .dropdown-menu {
-        width: ;
-    }
+/*search box*/
 
-#adv-search{
-     padding-top:5px;
-    padding-bottom:10px;
-}
-.dropdown.dropdown-lg .dropdown-menu {
-    margin-top: -1px;
-    padding: 6px 20px;
-}
-.input-group-btn .btn-group {
-    display: flex !important;
-    
-}
-.btn-group .btn {
-    
-    border-radius: 0;
-    margin-left: -1px;
-}
-.btn-group .btn:last-child {
-    border-top-right-radius: 4px;
-    border-bottom-right-radius: 4px;
-}
-.btn-group .form-horizontal .btn[type="submit"] {
-  border-top-left-radius: 4px;
-  border-bottom-left-radius: 4px;
-}
-.form-horizontal .form-group {
-    margin-left: 0;
-    margin-right: 0;
-}
-.form-group .form-control:last-child {
-    border-top-left-radius: 4px;
-    border-bottom-left-radius: 4px;
-}
+
 
 @media screen and (min-width: 768px) {
     .container-fluild{
-        width: 600px;
+        width: 800px;
         margin: 0 auto;
     }
-    #adv-search {
-        width: auto;
-        margin: 0 auto;
-    }
-    .dropdown.dropdown-lg {
-        position: static !important;
-    }
-    .dropdown.dropdown-lg .dropdown-menu {
-        min-width: 500px;
-    }
+    
     }
     
     /* Remove the jumbotron's default bottom margin */
      .jumbotron {
-         
       margin-bottom: 0;
       padding-top: 0px;
       padding-bottom: 0px;
@@ -100,52 +59,49 @@ body{
   </div>
 </div>
 
-<!-- search box + filter-->
+
 <div class="container-fluild">
-   
-	<div class="row">
-		<div class="col-md-12">
-            <div class="input-group" id="adv-search">
-                <input type="text" class="form-control" placeholder="What do you need?..." />
-                <div class="input-group-btn">
-                    <div class="btn-group" role="group">
-                        <div class="dropdown dropdown-lg">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></button>
-                            <div class="dropdown-menu dropdown-menu-right" role="menu">
-                                <form class="form-horizontal" role="form">
-                                    <div class="form-group">
-                                    <label for="filter">Filter by</label>
-                                    <select class="form-control">
-                                        <option value="0" selected>All Snippets</option>
-                                        <option value="1">Featured</option>
-                                        <option value="2">Most popular</option>
-                                        <option value="3">Top rated</option>
-                                        <option value="4">Most commented</option>
-                                    </select>
-                                    </div>
-                                     
-                                    <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
-                                </form>
-                            </div>
-                        </div>
-                        <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
-                    </div>
-                 </div>
+    <div class="row">
+    <!-- search box -->
+        <div class="input-group col-xs-12">
+            <input type="text" class="search-query form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button class="btn btn-danger" type="button" >
+                    <span class="glyphicon glyphicon-search"></span>
+                </button>
+            </span>
+        </div>
+    <!--  filter-->
+        <div class="col-xs-12">
+            <div class="btn-group btn-group-justified">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    Categories <span class="caret"></span></button>
+                    <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">Category 1</a></li>
+                    <li><a href="#">Category 2</a></li>
+                    </ul>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    Filter <span class="caret"></span></button>
+                    <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">All</a></li>
+                    <li><a href="#">Most popular</a></li>
+                    </ul>
+                </div>
             </div>
-        </div>      
+        </div>
     </div>
-
-
 <!-- list product-->
-
-
-   <!-- Product One -->
+<br>
+ <!-- Product One -->
     <div class="row">
         <div class="panel panel-default">
                 <div class="panel-body">
                     <div class="col-xs-12">
                         <a href="#">
-                            <img class="img-responsive" src="http://placehold.it/700x300" alt="">
+                            <img class="img-responsive" src="01.jpg" alt="">
                         </a>
                     </div>
                     <div class="col-xs-12">
@@ -179,7 +135,7 @@ body{
                 <div class="panel-body">
                     <div class="col-xs-12">
                         <a href="#">
-                            <img class="img-responsive" src="http://placehold.it/700x300" alt="">
+                            <img class="img-responsive" src="01.jpg" alt="">
                         </a>
                     </div>
                     <div class="col-xs-12">
@@ -212,7 +168,7 @@ body{
                 <div class="panel-body">
                     <div class="col-xs-12">
                         <a href="#">
-                            <img class="img-responsive" src="http://placehold.it/700x300" alt="">
+                            <img class="img-responsive" src="01.jpg" alt="">
                         </a>
                     </div>
                     <div class="col-xs-12">
