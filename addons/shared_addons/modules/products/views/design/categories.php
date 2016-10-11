@@ -176,7 +176,7 @@ body{
                     </div>
                     <div class="col-xs-12">
                         
-                        <h3><?php echo $r->c_name;?></h3>
+                        <h3><a href="show_products/<?php echo $r->id;?>" title=""><?php echo $r->c_name;?></a></h3>
                         <!-- <h4>Subheading</h4> -->
                         <p><?php echo $r->c_description;?></p>
                        
