@@ -68,7 +68,8 @@
             </div>
             <div class="ls col-xs-12">
                 <div class="detail col-xs-6 col-md-6 ">
-                    <p class="properties-label"> {{ p_name }}</p>
+                    <p class="properties-label"> <a href="{{ url:site }}products/detail/{{ id }}"> {{ p_name }} </a> </p>
+                   
                 </div>
                 <div class="detail col-xs-6 col-md-6">
                     <div class="pull-right">
@@ -77,10 +78,11 @@
                 </div>
                 </div>
                 <div class="detail col-xs-12 col-md-12"> 
-                    <p class="properties-label-des"> Short description:</p>
-                    <span>{{ p_short_description }}</span>
-                <a href="{{ url:site }}products/detail/{{ id }}"> Read more </a>
+                    <span class="properties-label-des"> Short description:</span>
+                    <p>{{ p_short_description }}</p>
+                    <a href="{{ url:site }}products/detail/{{ id }}"> Read more </a>
                 </div>
+                
                 <div class="btn-group btn-group-justified">
                     <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-thumbs-up"></span></a>
                     <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-comment"></span></a>
