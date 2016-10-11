@@ -1,136 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Bootstrap Example</title>
+  
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="<?php echo base_url("addons/shared_addons/modules/products")?>/css/mystyle.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <style>
-    
-body{
-    background-color:#DCDCDC;
-}
-
-.jumbotron .h1, .jumbotron h1 {
-    color: #F8F8FF;
-}
-
-.dropdown.dropdown-lg .dropdown-menu {
-        width: ;
-    }
-
-#adv-search{
-     padding-top:0;
-    padding-bottom:20px;
-}
-.dropdown.dropdown-lg .dropdown-menu {
-    margin-top: -1px;
-    padding: 6px 20px;
-}
-.input-group-btn .btn-group {
-    display: flex !important;
-    
-}
-.btn-group .btn {
-    
-    border-radius: 0;
-    margin-left: -1px;
-}
-.btn-group .btn:last-child {
-    border-top-right-radius: 4px;
-    border-bottom-right-radius: 4px;
-}
-.btn-group .form-horizontal .btn[type="submit"] {
-  border-top-left-radius: 4px;
-  border-bottom-left-radius: 4px;
-}
-.form-horizontal .form-group {
-    margin-left: 0;
-    margin-right: 0;
-}
-.form-group .form-control:last-child {
-    border-top-left-radius: 4px;
-    border-bottom-left-radius: 4px;
-}
-
-@media screen and (min-width: 768px) {
-    .container{
-        width: 600px;
-        margin: 0 auto;
-    }
-    #adv-search {
-        width: auto;
-        margin: 0 auto;
-    }
-    .dropdown.dropdown-lg {
-        position: static !important;
-    }
-    .dropdown.dropdown-lg .dropdown-menu {
-        min-width: 500px;
-    }
-    }
-    
-    /* Remove the jumbotron's default bottom margin */
-     .jumbotron {
-         
-      margin-bottom: 0;
-      padding-top: 0px;
-      padding-bottom: 0px;
-      background-color:#DC143C;
-    }
-   
-    /* Add a gray background color and some padding to the footer */
-    footer {
-      background-color: #f2f2f2;
-      padding: 25px;
-    }
-  </style>
+ 
 </head>
 <body>
 
-<!-- Menu -->
-<div class="jumbotron">
-  <div class="container text-center">
-    <h1>Main Menu</h1>
-    
-  </div>
-</div>
 
-<!-- search box + filter-->
-<div class="container">
-   
-	<div class="row">
-		<div class="col-md-12">
-            <div class="input-group" id="adv-search">
-                <input type="text" class="form-control" placeholder="What do you need?..." />
-                <div class="input-group-btn">
-                    <div class="btn-group" role="group">
-                        <div class="dropdown dropdown-lg">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></button>
-                            <div class="dropdown-menu dropdown-menu-right" role="menu">
-                                <form class="form-horizontal" role="form">
-                                    <div class="form-group">
-                                    <label for="filter">Filter by</label>
-                                    <select class="form-control">
-                                        <option value="0" selected>All Snippets</option>
-                                        <option value="1">Featured</option>
-                                        <option value="2">Most popular</option>
-                                        <option value="3">Top rated</option>
-                                        <option value="4">Most commented</option>
-                                    </select>
-                                    </div>
-                                     
-                                    <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
-                                </form>
-                            </div>
-                        </div>
-                        <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
-                    </div>
-                 </div>
+    <!-- Menu -->
+    <div class="jumbotron">
+      <div class="container text-center">
+        <h1>Main Menu</h1>
+
+      </div>
+    </div>
+<!-- search box + filter-->  
+    <div class="row">
+    <!-- search box -->
+        <div class="searchbox input-group col-xs-12">
+            <input type="text" class="search-query form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button class="btn btn-danger" type="button" >
+                    <span class="glyphicon glyphicon-search"></span>
+                </button>
+            </span>
+        </div>
+    <!--  filter-->
+        <div class="filter-category col-xs-12">
+            
+            <div class="btn-group btn-group-justified">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    Categories <span class="caret"></span></button>
+                    <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">Category 1</a></li>
+                    <li><a href="#">Category 2</a></li>
+                    </ul>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    Filter <span class="caret"></span></button>
+                    <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">All</a></li>
+                    <li><a href="#">Most popular</a></li>
+                    </ul>
+                </div>
             </div>
-        </div>      
+        </div>
     </div>
 
 
@@ -138,31 +60,35 @@ body{
    <!-- Product One -->
     {{ products.entries }}    
     <div class="row">
-        <div class="panel panel-default">
-                <div class="panel-body">
-                    <div class="col-xs-12">
-                        <a href="{{ url:site }}products/detail/{{ id }}">
-                           {{ p_image:img }}
-                        </a>
-                    </div>
-                    <div class="col-xs-12">
-                        
-                        <h3>{{ p_name }}</h3>
-                        <!-- <h4>Subheading</h4> -->
-                        <p>{{ p_short_description }}</p>
-                       
-                       <p>Price: {{ p_price }} </p>
-                        
-                        <div class="btn-group btn-group-justified">
-                            <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-thumbs-up"></span></a>
-                            <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-comment"></span></a>
-                            <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-share-alt"></span></a>
-                        </div>
-                   
-                    </div>
-             </div>
+        <div class="product">
+            <div class="col-xs-12">
+                <a href="{{ url:site }}products/detail/{{ id }}">
+                   {{ p_image:img }}
+                </a>
+            </div>
+            <div class="ls col-xs-12">
+                <div class="detail col-xs-6 col-md-6 ">
+                    <p class="properties-label"> {{ p_name }}</p>
+                </div>
+                <div class="detail col-xs-6 col-md-6">
+                    <div class="pull-right">
+                    <p class="properties-label"> Price :</p>
+                <span class="price properties-content"> {{ p_price }}</span>   
+                </div>
+                </div>
+                <div class="detail col-xs-12 col-md-12"> 
+                    <p class="properties-label-des"> Short description:</p>
+                    <span>{{ p_short_description }}</span>
+                <a href="{{ url:site }}products/detail/{{ id }}"> Read more </a>
+                </div>
+                <div class="btn-group btn-group-justified">
+                    <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-thumbs-up"></span></a>
+                    <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-comment"></span></a>
+                    <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-share-alt"></span></a>
+                </div>             
+            </div>
         </div>
-     </div>
+    </div>
      {{ /products.entries }} 
     <!-- /.row -->
     
@@ -193,7 +119,7 @@ body{
                 </ul>
             </div>
         </div>
-</div><br>
+<br>
 
 <br><br>
 
