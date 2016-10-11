@@ -25,7 +25,15 @@ class Products_m extends MY_Model
     	$query = $this->db->get();
     	return $query->result();
     }
-
+    # lấy ra chi tiết sản phẩm
+    public function detail_products($id_p)
+    {
+        $this->db->select("*");
+        $this->db->where("id",$id_p);
+        $this->db->from("products_products");
+        $query = $this->db->get();
+        return $query->row_array();
+    }
     # lấy comments
     public function get_comments()
     {
