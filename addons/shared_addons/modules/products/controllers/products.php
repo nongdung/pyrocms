@@ -13,36 +13,32 @@ class Products extends Public_Controller{
     # hiển thị categories
     public function index()
     {
-       $data['results'] = $this->products_m->get_categories();
+       #$data['results'] = $this->products_m->get_categories();    
+    }
 
-       $this->load->view('design/categories',$data);
-       /*$params = array(
-                'stream'    => 'categories',
+    # hiển thị products
+    public function getProducts()
+    {
+    	#$data = $this->products_m->get_products();
+        $params = array(
+                'stream'    => 'products',
                 'namespace' => 'products',
                 'order_by'  => 'ordering_count',
                 'sort'      => 'asc',
             );
-        $data['categories'] = $this->streams->entries->get_entries($params);
+        $data['products'] = $this->streams->entries->get_entries($params);
         $this->template
             ->title($this->module_details['name'])
-            ->build('design/categories',$data);*/    
+            ->build('design/categories',$data);    	       
     }
 
-    # hiển thị products
-    public function get_products()
+    # hiển thị chi tiết sản phẩm 
+    public function detail($id_p)
     {
-    	#$data = $this->products_m->get_products();
-        $data = $this->streams->entries->get_entry($id,'products','products',true);
+        $data = $this->streams->entries->get_entry($id_p,'products','products',true);
         $this->template
             ->title($this->module_details['name'])
-            ->build('design/product',$data);   	       
-    }
-    # hiển thị chi tiết sản phẩm 
-    public function show_products($id_p)
-    {
-        $data['results'] = $this->products_m->detail_products($id_p);
-        $this->load->view('design/product',$data);
-        #print_r($data);
+            ->build('design/product',$data); 
     }
     # hiển thị comments
     public function get_comments()

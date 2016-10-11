@@ -136,51 +136,22 @@ body{
 
 <!-- list product-->
    <!-- Product One -->
-   <!-- {{ categories.entries }}    
+    {{ products.entries }}    
     <div class="row">
         <div class="panel panel-default">
                 <div class="panel-body">
                     <div class="col-xs-12">
-                        <a href="{{ url:site }}products/get_products/{{ id }}">
-                            <img class="img-responsive" src="" alt="">{{ c_image:img }}
+                        <a href="{{ url:site }}products/detail/{{ id }}">
+                           {{ p_image:img }}
                         </a>
                     </div>
                     <div class="col-xs-12">
                         
-                        <h3>{{ c_name }}</h3>
-                        <h4>Subheading</h4>
-                        <p>{{ c_description }}</p>
-                       
-                       <p>Price: {{ products.entries }} {{ p_price }} {{ /products.entries }}</p>
-                        
-                        <div class="btn-group btn-group-justified">
-                            <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-thumbs-up"></span></a>
-                            <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-comment"></span></a>
-                            <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-share-alt"></span></a>
-                        </div>
-                   
-                    </div>
-             </div>
-        </div>
-     </div>
-     {{ /categories.entries }} -->
-    <!-- /.row -->
-    <?php foreach($results as $r) :?>
-    <div class="row">
-        <div class="panel panel-default">
-                <div class="panel-body">
-                    <div class="col-xs-12">
-                        <a href="<?php echo base_url('products/get_products/2');?>">
-                            <img class="img-responsive" src="" alt=""> 
-                        </a>
-                    </div>
-                    <div class="col-xs-12">
-                        
-                        <h3><a href="show_products/<?php echo $r->id;?>" title=""><?php echo $r->c_name;?></a></h3>
+                        <h3>{{ p_name }}</h3>
                         <!-- <h4>Subheading</h4> -->
-                        <p><?php echo $r->c_description;?></p>
+                        <p>{{ p_short_description }}</p>
                        
-                       <p>Price: </p>
+                       <p>Price: {{ p_price }} </p>
                         
                         <div class="btn-group btn-group-justified">
                             <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-thumbs-up"></span></a>
@@ -192,7 +163,7 @@ body{
              </div>
         </div>
      </div>
-    <?php endforeach;  ?>
+     {{ /products.entries }} 
     <!-- /.row -->
     
     <div class="row text-center">

@@ -42,38 +42,44 @@
 		.img-product {
    			padding: 0px;
 		}
+		@media screen and (min-width: 768px) {
+			.container-fluid{
+				width:600px;
+				margin: 0 auto;
+			}
+		}
 	</style>
 </head>
 <body>
 	<div class="container-fluid">
 		
 		<div class="row">
-			<img class="img-responsive" src="<?php echo base_url($results["p_image"]);?>">
+			 {{ p_image:img }}
 		</div> <!-- end img -->
 	
-		<div class="row" >
+		<div class="row">
 			<div class="properties-detail">
 				<div class="detail col-xs-12 col-md-12">
 					<p class="properties-label"> Product Name :</p>
-					<span class="properties-content"> <?php echo $results["p_name"];?></span>	
+					<span class="properties-content"> {{ p_name }}</span>	
 				</div>
 
 				<div class="detail col-xs-6 col-md-6">
 					<p class="properties-label"> Code :</p>
-					<span class="properties-content"><?php echo $results["p_id"];?> </span>	
+					<span class="properties-content">{{ p_id }} </span>	
 				</div>
 				<div class="detail col-xs-6 col-md-6">
 					<p class="properties-label"> Price :</p>
-					<span class="properties-content"><?php echo $results["p_price"];?></span>	
+					<span class="properties-content">{{ p_price }}</span>	
 				</div>
 				<div class="detail col-xs-6 col-md-6">
 					<p class="properties-label"> Discount :</p>				
-					<?php if ($results["p_discount"] != 0) {?> 
-						<span class="properties-content"><?php echo $results["p_discount"];?>%</span>
+					{{ if discount }} 
+						<span class="properties-content">{{ p_discount }}%</span>
 					
-					<?php } else { ?> 
-						<span class="properties-content"> 0%  </span> <?php } ?>
-	    			
+					{{ else }} 
+						<span class="properties-content"> 0%  </span> 
+	    			{{ endif }}
 				</div>
 				<div class="detail col-xs-6 col-md-6">
 					<p class="properties-label"> Rate :</p>
@@ -91,7 +97,7 @@
 				</div>
 			</div>				
 		</div>
-	
+		
 		<div class="row">
 			<div class="connect  btn-group  btn-group-justified">							
 					<a class="btn btn-primary" href="#" role="button"><i class="fa fa-heart-o" aria-hidden="true"> Like </i></a>
@@ -101,12 +107,12 @@
 					<a class="btn btn-info" href="#" role="button"><i class="fa fa-share-alt" aria-hidden="true"> Share </i></a>
 			</div>			 
 		</div>
-
+		
 		<div class="row">
 			<div class="properties-detail">
 				<div class="col-xs-12 col-md-12"> 
 					<h2>Long description:</h2>
-					<span><?php echo $results["p_long_description"];?></span>
+					<span>{{ p_long_description }}</span>
 				</div>
 			</div>			
 		</div>
