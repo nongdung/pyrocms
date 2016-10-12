@@ -51,4 +51,16 @@ class Products_m extends MY_Model
 	    $query = $this->db->get('products_products');
 	    return $query->result();
     }
+
+    public function server(){
+        $this->db->select('*');
+        $this->db->from('products_products');
+        $this->db->join('files', 'files.id = products_products.p_image', 'inner');
+        $query = $this->db->get();
+        $data = $query->result_array();
+        foreach ($data as $index=>$value){
+            $data[$index]["path"] = str_replace("{{ url:site }}",BASE_URL,$value['path']);
+        }
+        return $data;
+    }
 }
