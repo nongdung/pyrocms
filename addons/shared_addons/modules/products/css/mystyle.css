@@ -1,29 +1,20 @@
-
-
-
+/*CSS for hompage*/
 body{
     background-color:#DCDCDC;
 }
-.row{
-    margin-top:15px;
-    background-color:#fff;
-}
-img{
-    width:100%;
-    height:200px;
-}
-.dropdown-menu{
-    width: 100%;
-}
-.ls{
-    padding-top:5px;
-}
-.detail .price{
-    color:blue;
-}
+
+
+/*main menu*/
+.jumbotron {
+      margin-bottom: 0;
+      padding-top: 0px;
+      padding-bottom: 0px;
+      background-color:#DC143C;
+    }
 .jumbotron .h1, .jumbotron h1 {
     color: #F8F8FF;
 }
+
 
 /*search box*/
 .input-group[class*=col-]{
@@ -33,53 +24,72 @@ img{
     padding-right: 15px;
 }
 
+/*dropdown filter + category*/
 .filter-category{
     padding-right: 0px;
     padding-left: 0px;
 }
+.dropdown-menu{
+    width: 100%;
+}
+
+/*list product*/
+.image{
+    padding:0;
+}
+
+img{
+    width:100%;
+    height:200px;
+   
+}
+.ls{
+    margin-top: 10px;
+    background-color: white;
+}
+/**style font**/
+.detail .price{
+    color:blue;
+}
 
 .properties-label {
-        float:left;
-        font-weight: bold;
-        padding-right: 1%;
-        
-    }
-    .properties-label-des {
-        font-weight: bold;
-    }
-    
+    float:left;
+    font-weight: bold;
+    padding-right: 1%;
+}
+
+.properties-label-des {
+    font-weight: bold;
+}
+
+/*loadmore button*/
+.loadmore{
+    width: 100%;
+    margin-top: 10px;
+}
+/*ipad screen design*/ 
 @media screen and (min-width: 768px) {
     .container-fluild{
-        width: 800px;
+        width: 768px;
         margin: 0 auto;
     }
-    .jumbotron {
-      margin-bottom: 0;
-      padding-top: 0px;
-      padding-bottom: 0px;
-      background-color:#DC143C;
-    }
-    .input-group[class*=col-]{
-    padding-top:5px;
-    padding-left: 0px;
-    padding-right: 0px;
-    }
-}
     
-    /* Remove the jumbotron's default bottom margin */
-     .jumbotron {
-      margin-bottom: 0;
-      padding-top: 0px;
-      padding-bottom: 0px;
-      background-color:#DC143C;
-    }
+    img{
+    width:100%;
+    height:350px;
    
-    /* Add a gray background color and some padding to the footer */
-    footer {
-      background-color: #f2f2f2;
-      padding: 25px;
     }
 
-    /* style thêm */
+    .input-group[class*=col-]{
+    padding-top:5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    }
+    
+}
+    
+    
+
+   
     
     
