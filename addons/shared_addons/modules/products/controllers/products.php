@@ -13,16 +13,9 @@ class Products extends Public_Controller{
     # hiển thị categories
     public function index()
     {
-       $params = array(
-                'stream'    => 'products',
-                'namespace' => 'products',
-                'order_by'  => 'ordering_count',
-                'sort'      => 'asc',
-            );
-        $data['products'] = $this->streams->entries->get_entries($params);
-        $this->template
-            ->title($this->module_details['name'])
-            ->build('design/categories',$data);    
+         $this->template
+             ->title($this->module_details['name'])
+             ->build('homepage/index');    
     }
     
     # hiển thị chi tiết sản phẩm 
@@ -35,23 +28,25 @@ class Products extends Public_Controller{
     }
     # hiển thị comments
     public function get_comments()
-    {
-    	$data = $this->products_m->get_comments();
-        
+    {     
     }
 
     # tìm kiếm
     public function search()
     {
-    	if($this->input->get())
-    	{
-    		$keyword =  $this->input->get('keyword');
-    		$data    =  $this->products_m->search($keyword);
-    	}
-    	$this->output
-        	 ->set_content_type('application/json')
-             ->set_output(json_encode($data));
     }
    
+  //New function here--provide jsondata for react main.js
+   public function ajaxlist(){
+        //receive value limit from loadmore button
+        $limit =(int) $this->input->post('limit');
+        $offset =(int) $this->input->post('offset');
+
+        $data = $this->products_m->ajaxlist($limit, $offset);
+        $json = $this->output
+                    ->set_content_type('application/json')
+                    ->set_output(json_encode($data));  
+   
+   }
 }
 
