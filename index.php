@@ -1,6 +1,6 @@
 <?php
 
-# If you have already installed then delete this
+# If you have already installed then delete this. Test slack
 if ( ! file_exists('system/cms/config/database.php'))
 {
 	// Make sure we've not already tried this
