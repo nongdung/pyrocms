@@ -27,7 +27,7 @@ var Blog = React.createClass({
         type: 'POST',
         data: this.state.cat,
         success: function(data) {
-          this.setState({data: this.state.data ,query:{limit:this.state.query.limit,offset:this.state.query.offset,value:''},cat:data});
+          this.setState({data: this.state.data ,query:{limit:this.state.query.limit,offset:this.state.query.offset,cat_id:''},cat:data});
          console.log("loadCategoriesFromServer");
           console.log(this.state);
         }.bind(this),
@@ -38,7 +38,7 @@ var Blog = React.createClass({
   },
  //origin state
   getInitialState: function() {
-    return {data: [], query:{limit:3,offset:0,value:''}, cat:[] };
+    return {data: [], query:{limit:3,offset:0,cat_id:''}, cat:[] };
   },
     
    componentDidMount: function() {
@@ -57,11 +57,11 @@ var Blog = React.createClass({
       url: this.props.url,
       dataType: 'json',
       type: 'POST',
-      data: {limit:limit, offset: offset,value:this.state.query.value},
+      data: {limit:limit, offset: offset,cat_id:this.state.query.cat_id},
       success: function(newdata) {
         var a = this.state.data;
         var b = a.concat(newdata);
-        this.setState({data: b, query: {limit:limit, offset: offset,value:this.state.query.value}});
+        this.setState({data: b, query: {limit:limit, offset: offset,cat_id:this.state.query.cat_id}});
         console.log("loadmore");
         console.log(this.state);
       }.bind(this),
@@ -72,17 +72,17 @@ var Blog = React.createClass({
       },
 
   handleChange: function(e){
-    var vname = e.value;
+    var cat_id = e.value;
     var limit = this.state.query.limit;
     var offset = 0;
-    console.log(vname);
+    
     $.ajax({
     url: this.props.url,
     dataType: 'json',
     type: 'POST',
-    data: {limit:this.state.query.limit, offset: offset,value:vname},
+    data: {limit:this.state.query.limit, offset: offset,cat_id:cat_id},
     success: function(data) {
-      this.setState({data:data, query: {limit:limit, offset: offset,value:vname}});
+      this.setState({data:data, query: {limit:limit, offset: offset,cat_id:cat_id}});
       console.log("catchange");
       console.log(this.state);
     }.bind(this),
@@ -149,10 +149,10 @@ var Filter = React.createClass({
     
     handleSubmit:function(e){
       e.preventDefault();
-      var value = this.state.value;
-      this.props.onhanldeChange({value: value});
+      var cat_id = this.state.value;
+      this.props.onhanldeChange({value: cat_id});
       this.setState({value: ''});
-      console.log(value);
+      
     },
   render: function(){
     var Cat = this.props.cat.map(function(c){
