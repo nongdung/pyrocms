@@ -1,5 +1,6 @@
 var Blog = React.createClass({
   loadProductFromServer: function() {
+    
      //call data from server
      $.ajax({
       url: this.props.url,
@@ -8,7 +9,8 @@ var Blog = React.createClass({
       data: this.state.query,
       success: function(data) {
         this.setState({data: data, query: this.state.query});
-        console.log(data);
+        console.log("loadProductFromServer");
+        console.log(this.state);
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(this.props.url, status, err.toString());
@@ -18,14 +20,16 @@ var Blog = React.createClass({
     },
   loadCategoriesFromServer:function()
   {
+      
       $.ajax({
         url: 'http://localhost/pyrocms/products/ajaxcategories',
         dataType: 'json',
         type: 'POST',
-        data: this.state.value,
+        data: this.state.cat,
         success: function(data) {
-          this.setState({value: data});
-          console.log(data);
+          this.setState({data: this.state.data ,query:{limit:this.state.query.limit,offset:this.state.query.offset,value:''},cat:data});
+         console.log("loadCategoriesFromServer");
+          console.log(this.state);
         }.bind(this),
         error: function(xhr, status, err) {
           console.error('http://localhost/pyrocms/products/ajaxcategories', status, err.toString());
@@ -34,7 +38,7 @@ var Blog = React.createClass({
   },
  //origin state
   getInitialState: function() {
-    return {data: [], query:{limit:3,offset:0}, value:[]};
+    return {data: [], query:{limit:3,offset:0,value:''}, cat:[] };
   },
     
    componentDidMount: function() {
@@ -47,18 +51,19 @@ var Blog = React.createClass({
   handleSubmit: function(e) {
       e.preventDefault();
       var limit = 3;
-      var offset = this.state.query.offset+3;
+      var offset = this.state.query.offset+limit;
       // TODO: send request to the server
       $.ajax({
       url: this.props.url,
       dataType: 'json',
       type: 'POST',
-      data: {limit:1, offset: offset},
+      data: {limit:limit, offset: offset,value:this.state.query.value},
       success: function(newdata) {
         var a = this.state.data;
         var b = a.concat(newdata);
-        this.setState({data: b, query: {limit:limit, offset: offset}});
-        
+        this.setState({data: b, query: {limit:limit, offset: offset,value:this.state.query.value}});
+        console.log("loadmore");
+        console.log(this.state);
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(this.props.url, status, err.toString());
@@ -68,19 +73,18 @@ var Blog = React.createClass({
 
   handleChange: function(e){
     var vname = e.value;
-    var limit = 2;
+    var limit = this.state.query.limit;
     var offset = 0;
-    console.log(e);
+    console.log(vname);
     $.ajax({
     url: this.props.url,
     dataType: 'json',
     type: 'POST',
-    data: {value:vname,limit:3, offset: offset},
+    data: {limit:this.state.query.limit, offset: offset,value:vname},
     success: function(data) {
-      this.setState({data:data, query: {limit:limit, offset: offset},value:this.state.value});
-      console.log(data);
-      console.log(this.state.query);
-      console.log(this.state.value);
+      this.setState({data:data, query: {limit:limit, offset: offset,value:vname}});
+      console.log("catchange");
+      console.log(this.state);
     }.bind(this),
     error: function(xhr, status, err) {
       console.error(this.props.url, status, err.toString());
@@ -101,7 +105,7 @@ var Blog = React.createClass({
       <div className="main">
         <div className="row">
           <Searchbox />
-          <Filter cat = {this.state.value} onhanldeChange={this.handleChange}/>
+          <Filter cat = {this.state.cat} onhanldeChange={this.handleChange}/>
         </div>
         <div className="row">
           <div className="product">
@@ -136,7 +140,7 @@ var Searchbox = React.createClass({
 var Filter = React.createClass({
   getInitialState: function() {
         return {
-            value: 'All'
+            value: ''
         }
     },
     change: function(event){ 
@@ -148,22 +152,21 @@ var Filter = React.createClass({
       var value = this.state.value;
       this.props.onhanldeChange({value: value});
       this.setState({value: ''});
-      //console.log(this.state.value);
+      console.log(value);
     },
   render: function(){
     var Cat = this.props.cat.map(function(c){
       return(
-      <option key={c.c_name} value={c.c_name}>{c.c_name}</option>);
+      <option key={c.id_c} value={c.id_c}>{c.c_name}</option>);
     })
     return(
       <form className="commentForm" onSubmit={this.handleSubmit}>
           <select id="lang" onChange={this.change} value={this.state.value} >
-              <option value="All" type="submit" >All</option>
+              <option value="" >All</option>
               {Cat}
          </select>
            <input type="submit" value="Post" />
-              <p></p>
-          <p>{this.state.value}</p>
+          
            
      </form>
   );
