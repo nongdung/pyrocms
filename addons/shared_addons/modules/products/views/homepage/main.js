@@ -143,15 +143,16 @@ var Filter = React.createClass({
             value: ''
         }
     },
-    change: function(event){ 
-        this.setState({value: event.target.value}); 
-    },
+    
     
     handleSubmit:function(e){
+      this.setState({value: e.target.value}); 
       e.preventDefault();
-      var cat_id = this.state.value;
+      var cat_id = e.target.value;
+      
+      
       this.props.onhanldeChange({value: cat_id});
-      this.setState({value: ''});
+      this.setState({value: e.target.value});
       
     },
   render: function(){
@@ -160,15 +161,14 @@ var Filter = React.createClass({
       <option key={c.id_c} value={c.id_c}>{c.c_name}</option>);
     })
     return(
-      <form className="commentForm" onSubmit={this.handleSubmit}>
-          <select id="lang" onChange={this.change} value={this.state.value} >
-              <option value="" >All</option>
+      <div className="filter-category col-xs-12" >
+          <select className="form-control" onChange={this.handleSubmit} value={this.state.value} >
+              <option value="">All</option>
               {Cat}
          </select>
-           <input type="submit" value="Post" />
           
            
-     </form>
+     </div>
   );
   }
 });
