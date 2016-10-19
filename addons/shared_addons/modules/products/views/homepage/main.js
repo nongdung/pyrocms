@@ -22,23 +22,23 @@ var Blog = React.createClass({
   {
       
       $.ajax({
-        url: 'http://localhost/pyrocms/products/ajaxcategories',
+        url: window.location+'/ajaxcategories',
         dataType: 'json',
         type: 'POST',
         data: this.state.cat,
         success: function(data) {
-          this.setState({data: this.state.data ,query:{limit:this.state.query.limit,offset:this.state.query.offset,cat_id:''},cat:data});
+          this.setState({data: this.state.data ,query:this.state.query,cat:data});
          console.log("loadCategoriesFromServer");
           console.log(this.state);
         }.bind(this),
         error: function(xhr, status, err) {
-          console.error('http://localhost/pyrocms/products/ajaxcategories', status, err.toString());
+          console.error(window.location+'/ajaxcategories', status, err.toString());
         }.bind(this)
     });
   },
  //origin state
   getInitialState: function() {
-    return {data: [], query:{limit:3,offset:0,cat_id:''}, cat:[] };
+    return {data: [], query:{limit:3,offset:0,cat_id:'',f_id:'1'}, cat:[] };
   },
     
    componentDidMount: function() {
@@ -48,7 +48,7 @@ var Blog = React.createClass({
   },
 
  //loadmore button-> load 3 more product with limit=1
-  handleSubmit: function(e) {
+  handleSubmitloadmore: function(e) {
       e.preventDefault();
       var limit = 3;
       var offset = this.state.query.offset+limit;
@@ -57,11 +57,11 @@ var Blog = React.createClass({
       url: this.props.url,
       dataType: 'json',
       type: 'POST',
-      data: {limit:limit, offset: offset,cat_id:this.state.query.cat_id},
+      data: {limit:limit, offset: offset,cat_id:this.state.query.cat_id,f_id:this.state.query.f_id},
       success: function(newdata) {
         var a = this.state.data;
         var b = a.concat(newdata);
-        this.setState({data: b, query: {limit:limit, offset: offset,cat_id:this.state.query.cat_id}});
+        this.setState({data: b, query: {limit:limit, offset: offset,cat_id:this.state.query.cat_id,f_id:this.state.query.f_id}});
         console.log("loadmore");
         console.log(this.state);
       }.bind(this),
@@ -71,8 +71,8 @@ var Blog = React.createClass({
         });
       },
 
-  handleChange: function(e){
-    var cat_id = e.value;
+  handleCat: function(e){
+    var cat_id = e.cat_id;
     var limit = this.state.query.limit;
     var offset = 0;
     
@@ -80,9 +80,9 @@ var Blog = React.createClass({
     url: this.props.url,
     dataType: 'json',
     type: 'POST',
-    data: {limit:this.state.query.limit, offset: offset,cat_id:cat_id},
+    data: {limit:this.state.query.limit, offset: offset,cat_id:cat_id,f_id:this.state.query.f_id},
     success: function(data) {
-      this.setState({data:data, query: {limit:limit, offset: offset,cat_id:cat_id}});
+      this.setState({data:data, query: {limit:limit, offset: offset,cat_id:cat_id,f_id:this.state.query.f_id}});
       console.log("catchange");
       console.log(this.state);
     }.bind(this),
@@ -91,6 +91,28 @@ var Blog = React.createClass({
     }.bind(this)
   });
   },
+
+  handleFilterChange: function(e){
+    var f_id = e.f_id;
+    var limit = this.state.query.limit;
+    var offset=0;
+
+    $.ajax({
+      url:this.props.url,
+      dataType:'json',
+      type: 'POST',
+      data: {limit:this.state.query.limit, offset: offset,cat_id:this.state.query.cat_id,f_id:f_id},
+      success: function(data){
+        this.setState({data:data,query: {limit:limit, offset: offset,cat_id:this.state.query.cat_id,f_id:f_id}});
+        console.log(this.state);
+      }.bind(this),
+      error: function(xhr, status, err){
+        console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    });
+    console.log(f_id);
+  },
+
   render: function(){
     //map data after call-> set props for List product below
     var List = this.state.data.map(function(a) {
@@ -105,7 +127,10 @@ var Blog = React.createClass({
       <div className="main">
         <div className="row">
           <Searchbox />
-          <Filter cat = {this.state.cat} onhanldeChange={this.handleChange}/>
+          <div className="filter col-xs-12">
+          <Category cat = {this.state.cat} onhanldeChange={this.handleCat}/>
+          <Filter onhandleFilterChange={this.handleFilterChange} />
+          </div>
         </div>
         <div className="row">
           <div className="product">
@@ -113,7 +138,7 @@ var Blog = React.createClass({
           </div>
         </div>
         <div className="row text-center">
-          <button className="loadmore btn btn-default" onClick={this.handleSubmit}> Load more...</button>
+          <button className="loadmore btn btn-default" onClick={this.handleSubmitloadmore}> Load more...</button>
         </div>
       </div>
     );
@@ -136,32 +161,30 @@ var Searchbox = React.createClass({
   }
 });
 
-//filter: category+filter
-var Filter = React.createClass({
+//filter: category
+var Category = React.createClass({
   getInitialState: function() {
         return {
-            value: ''
+            cat_id: ''
         }
     },
+  handleSubmit:function(e){
+    this.setState({cat_id: e.target.value}); 
+    e.preventDefault();
+    var cat_id = e.target.value;
     
     
-    handleSubmit:function(e){
-      this.setState({value: e.target.value}); 
-      e.preventDefault();
-      var cat_id = e.target.value;
-      
-      
-      this.props.onhanldeChange({value: cat_id});
-      this.setState({value: e.target.value});
-      
-    },
+    this.props.onhanldeChange({cat_id: cat_id});
+    this.setState({cat_id: e.target.value});
+    
+  },
   render: function(){
     var Cat = this.props.cat.map(function(c){
       return(
       <option key={c.id_c} value={c.id_c}>{c.c_name}</option>);
     })
     return(
-      <div className="filter-category col-xs-12" >
+      <div className="filter-category col-xs-6" >
           <select className="form-control" onChange={this.handleSubmit} value={this.state.value} >
               <option value="">All</option>
               {Cat}
@@ -170,6 +193,35 @@ var Filter = React.createClass({
            
      </div>
   );
+  }
+});
+
+//Filier
+var Filter = React.createClass({
+  getInitialState: function(){
+    return {
+      f_id: '1'
+    }
+  },
+  handleFilter: function(e){
+    this.setState({f_id: e.target.value});
+    e.preventDefault();
+    var f_id=e.target.value;
+
+    this.props.onhandleFilterChange({f_id: f_id});
+    this.setState({f_id: e.target.value});
+  },
+  render: function(){
+    return (
+      <div className="filter-category col-xs-6">
+        <select className="form-control" onChange={this.handleFilter} value={this.state.f_id}>
+          <option value="1">Price high to low</option>
+          <option value="2">Price low to high</option>
+          <option value="3">Most Comment</option>
+          <option value="4">Most Like</option>
+        </select>
+      </div>
+    );
   }
 });
 
@@ -202,7 +254,7 @@ var Ls = React.createClass({
           </div>
           
           <div className="btn-group btn-group-justified">
-              <a href="#" className="btn btn-default"><span className="glyphicon glyphicon-thumbs-up"></span></a>
+              <a href="#" className="btn btn-default"><span className="glyphicon glyphicon-heart"></span></a>
               <a href="#" className="btn btn-default"><span className="glyphicon glyphicon-comment"></span></a>
               <a href="#" className="btn btn-default"><span className="glyphicon glyphicon-share-alt"></span></a>
           </div>             
@@ -212,6 +264,6 @@ var Ls = React.createClass({
 }); 
 
 ReactDOM.render(
-<Blog url="http://localhost/pyrocms/products/ajaxlist"/>,
+<Blog url={window.location+"/ajaxlist"}/>,
 document.getElementById('product')
 ); 
