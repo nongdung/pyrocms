@@ -66,6 +66,11 @@ img{
     width: 100%;
     margin-top: 10px;
 }
+
+/*commentbox homepage*/
+.well{
+    margin-bottom: 0;
+}
 /*ipad screen design*/ 
 @media screen and (min-width: 768px) {
     .container-fluild{
