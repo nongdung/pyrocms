@@ -1,0 +1,45 @@
+.properties-label {
+	float:left;
+	font-weight: bold;
+	padding-right: 1%;
+}
+.another-label {
+	float:left;
+	font-weight: bold;
+	padding-right: 5%;
+}
+.connect {
+	text-align: center;
+	padding-top: 20px; 
+}
+.detail {
+	height: 35px;
+}
+.properties-detail {
+	padding: 10px;
+}
+.btn {
+	height: 35px;
+	margin: 10px;
+}
+img {
+	width: 100%;
+}
+/* .img-product img {
+	padding-bottom:10px;
+} */
+.img-product {
+	padding: 2px;
+	height: 260px;
+}
+@media screen and (min-width: 768px) {
+	.container-fluid{
+		width:800px;
+		margin: 0 auto;
+	}
+}
+.carousel-inner > .item > img,
+.carousel-inner > .item > a > img {
+    width: 100%;
+    margin: auto;
+}
