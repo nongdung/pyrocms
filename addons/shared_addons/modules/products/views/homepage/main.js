@@ -255,13 +255,30 @@ var Ls = React.createClass({
           
           <div className="btn-group btn-group-justified">
               <a href="#" className="btn btn-default"><span className="glyphicon glyphicon-heart"></span></a>
-              <a href="#" className="btn btn-default"><span className="glyphicon glyphicon-comment"></span></a>
+              <a className="btn btn-default" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample"><span className="glyphicon glyphicon-comment"></span></a>
               <a href="#" className="btn btn-default"><span className="glyphicon glyphicon-share-alt"></span></a>
-          </div>             
+          </div>  
+
+          <CommentBox />
+        
+          
+                    
       </div>
     );
   }
 }); 
+
+var CommentBox = React.createClass({
+  render: function(){
+    return(
+       <div className="collapse" id="collapseExample">
+        <div className="well">
+              asdfasdljkfhasljasdfhjasdfhjklasdfhjkasdfhjkasdfasdfl
+        </div>
+      </div> 
+    );
+  }
+});
 
 ReactDOM.render(
 <Blog url={window.location+"/ajaxlist"}/>,
