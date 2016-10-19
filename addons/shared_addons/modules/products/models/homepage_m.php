@@ -30,6 +30,9 @@ class Homepage_m extends MY_Model
              
              $this->db->order_by('p_price','ASC');
         }
+        else{
+            $this->db->order_by('p_price','ASC');
+        }
         $query = $this->db->get();
         $data = $query->result_array();
         foreach ($data as $index=>$value){
