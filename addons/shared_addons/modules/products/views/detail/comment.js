@@ -5,11 +5,15 @@ var CommentBox = React.createClass({
 	    	url: this.props.url,
 	      	dataType: 'json',
 	      	cache: false,
+	      	type: 'POST',
+	      	data: this.state.query,
 	      	success: function(data) {
-	        	this.setState({data: data});
+	        	this.setState({data: data, query: this.state.query});
+	        	console.log('loadCommentsFromServer');
+	        	console.log(this.state);
 	      	}.bind(this),
 	      	error: function(xhr, status, err) {
-	      		this.setState({data: comments});
+	      		this.setState({data: comments, query: this.state.query});
 	        	console.error(this.props.url, status, err.toString());
 	      	}.bind(this)
 	    });
@@ -24,15 +28,40 @@ var CommentBox = React.createClass({
 	      	type: 'POST',
 	      	data: comment,
 	      	success: function(data) {
-	        	this.setState({data: data });
+	        	this.setState({data: data});	       	
 	      	}.bind(this),
 	     	 error: function(xhr, status, err) {
 	        	console.error(this.props.url, status, err.toString());
 	      	}.bind(this)
 	    });
 	},
+	handleLoadMore: function(e) {
+		/*console.log(this.state.data);*/
+    	e.preventDefault();
+    	var limit = 2;
+    	var offset = this.state.query.offset+limit;
+    	console.log(this.state.query.offset);
+      	// TODO: send request to the server
+    	$.ajax({
+	      	url: this.props.url,
+	      	dataType: 'json',
+	     	type: 'POST',
+	      	data: {limit:limit, offset: offset},
+	      	success: function(newdata) {
+		        var a = this.state.data;
+		        var b = a.concat(newdata);
+		        this.setState({data: b, query: {limit:limit, offset: offset }});
+		        console.log("loadmore");
+		        console.log(newdata);
+
+	      	}.bind(this),
+	      	error: function(xhr, status, err) {
+	        	console.error(this.props.url, status, err.toString());
+	      	}.bind(this)
+        });
+    },
  	getInitialState: function() {
-    	return {data: []};
+    	return {data: [], query:{limit:2,offset:0}};
   	},
 	componentDidMount: function() {
 	    this.loadCommentsFromServer();
@@ -42,7 +71,11 @@ var CommentBox = React.createClass({
 			<div className="commentBox">
 		        <h2>Comments</h2>
 		        <CommentList data={this.state.data} />
+		        <div className="row text-center">
+		        	<button className="loadmore btn btn-info" onClick={this.handleLoadMore}> Load more...</button>
+		        </div>
 		        <CommentForm onCommentSubmit={this.handleCommentSubmit} />
+		        
 	      	</div>
 		);
 	}
@@ -98,8 +131,7 @@ render: function() {
 /* Comment */
 var Comment = React.createClass({
 	rawMarkup: function() {
-	    var md = new Remarkable();
-	    
+	    var md = new Remarkable();	    
 	},
 	render: function() {
 	    return (
@@ -111,7 +143,7 @@ var Comment = React.createClass({
 });
 
 ReactDOM.render(
-	<CommentBox url={'http://localhost/pyrocms/products/comment/2'}/>,
+	<CommentBox url={'http://localhost/pyrocms/products/comment'}/>,
 		document.getElementById('comment')
 );
 
