@@ -4,8 +4,12 @@ var Detail = React.createClass({
 	    	url: this.props.url ,
 	    	dataType: 'json',
 	    	cache: false,
+	    	type: 'POST',
+	      	data: this.state.query,
 	    	success: function(data) {
-	        	this.setState({data: data});
+	        	this.setState({data: data, id_p:this.state.id});
+	        	console.log('loadDetailFromServer');
+	        	console.log(this.state);
 	      	}.bind(this),
 	      	error: function(xhr, status, err) {
 	        	console.error(this.props.url, status, err.toString());
@@ -13,7 +17,7 @@ var Detail = React.createClass({
 	    });
 	},
 	getInitialState: function() {
-	    return {data: []};
+	    return {data: [], id_p:''};
 	},
 	componentDidMount: function() {
 		this.loadDetailFromServer();  
@@ -130,6 +134,6 @@ var Other = React.createClass({
 }); /* end Other */
 
 ReactDOM.render(
-	<Detail url={'http://localhost/pyrocms/products/detail/1'}/>,
+	<Detail url={'http://localhost/pyrocms/products/ajaxdetail'}/>,
 	document.getElementById('detail')
 );
