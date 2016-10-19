@@ -19,7 +19,6 @@ body{
 /*search box*/
 .input-group[class*=col-]{
     padding-top:5px;
-    
     padding-left: 15px;
     padding-right: 15px;
 }

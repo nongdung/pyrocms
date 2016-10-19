@@ -1,5 +1,6 @@
 var Blog = React.createClass({
-  loadCommentsFromServer: function(a) {
+  loadProductFromServer: function() {
+    
      //call data from server
      $.ajax({
       url: this.props.url,
@@ -8,41 +9,61 @@ var Blog = React.createClass({
       data: this.state.query,
       success: function(data) {
         this.setState({data: data, query: this.state.query});
-        console.log(data);
+        console.log("loadProductFromServer");
+        console.log(this.state);
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(this.props.url, status, err.toString());
       }.bind(this)
         });
+    
     },
-  
-
+  loadCategoriesFromServer:function()
+  {
+      
+      $.ajax({
+        url: 'http://localhost/pyrocms/products/ajaxcategories',
+        dataType: 'json',
+        type: 'POST',
+        data: this.state.cat,
+        success: function(data) {
+          this.setState({data: this.state.data ,query:{limit:this.state.query.limit,offset:this.state.query.offset,cat_id:''},cat:data});
+         console.log("loadCategoriesFromServer");
+          console.log(this.state);
+        }.bind(this),
+        error: function(xhr, status, err) {
+          console.error('http://localhost/pyrocms/products/ajaxcategories', status, err.toString());
+        }.bind(this)
+    });
+  },
  //origin state
   getInitialState: function() {
-    return {data: [], query:{limit:3,offset:0}};
+    return {data: [], query:{limit:3,offset:0,cat_id:''}, cat:[] };
   },
-
+    
    componentDidMount: function() {
-    this.loadCommentsFromServer();
-   
+    this.loadProductFromServer();
+    this.loadCategoriesFromServer();
+    
   },
 
  //loadmore button-> load 3 more product with limit=1
   handleSubmit: function(e) {
       e.preventDefault();
       var limit = 3;
-      var offset = this.state.query.offset+3
+      var offset = this.state.query.offset+limit;
       // TODO: send request to the server
       $.ajax({
       url: this.props.url,
       dataType: 'json',
       type: 'POST',
-      data: {limit:1, offset: offset},
+      data: {limit:limit, offset: offset,cat_id:this.state.query.cat_id},
       success: function(newdata) {
         var a = this.state.data;
         var b = a.concat(newdata);
-        this.setState({data: b, query: {limit:limit, offset: offset}});
-        
+        this.setState({data: b, query: {limit:limit, offset: offset,cat_id:this.state.query.cat_id}});
+        console.log("loadmore");
+        console.log(this.state);
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(this.props.url, status, err.toString());
@@ -50,23 +71,45 @@ var Blog = React.createClass({
         });
       },
 
+  handleChange: function(e){
+    var cat_id = e.value;
+    var limit = this.state.query.limit;
+    var offset = 0;
+    
+    $.ajax({
+    url: this.props.url,
+    dataType: 'json',
+    type: 'POST',
+    data: {limit:this.state.query.limit, offset: offset,cat_id:cat_id},
+    success: function(data) {
+      this.setState({data:data, query: {limit:limit, offset: offset,cat_id:cat_id}});
+      console.log("catchange");
+      console.log(this.state);
+    }.bind(this),
+    error: function(xhr, status, err) {
+      console.error(this.props.url, status, err.toString());
+    }.bind(this)
+  });
+  },
   render: function(){
     //map data after call-> set props for List product below
-    var Node = this.state.data.map(function(a) {
+    var List = this.state.data.map(function(a) {
       return (
         <Ls p_name={a.p_name} id={a.id} key={a.id} p_price={a.p_price} p_short_description={a.p_short_description} p_image={a.path}>
         </Ls>
       );
     });
+
+    
     return(
       <div className="main">
         <div className="row">
           <Searchbox />
-          <Filter />
+          <Filter cat = {this.state.cat} onhanldeChange={this.handleChange}/>
         </div>
         <div className="row">
           <div className="product">
-            {Node}
+            {List}
           </div>
         </div>
         <div className="row text-center">
@@ -95,29 +138,37 @@ var Searchbox = React.createClass({
 
 //filter: category+filter
 var Filter = React.createClass({
+  getInitialState: function() {
+        return {
+            value: ''
+        }
+    },
+    
+    
+    handleSubmit:function(e){
+      this.setState({value: e.target.value}); 
+      e.preventDefault();
+      var cat_id = e.target.value;
+      
+      
+      this.props.onhanldeChange({value: cat_id});
+      this.setState({value: e.target.value});
+      
+    },
   render: function(){
+    var Cat = this.props.cat.map(function(c){
+      return(
+      <option key={c.id_c} value={c.id_c}>{c.c_name}</option>);
+    })
     return(
-     <div className="filter-category col-xs-12">
-            
-            <div className="btn-group btn-group-justified">
-                <div className="btn-group">
-                    <button type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                    Categories <span className="caret"></span></button>
-                    <ul className="dropdown-menu" role="menu">
-                    <li><a href="#">Category 1</a></li>
-                    <li><a href="#">Category 2</a></li>
-                    </ul>
-                </div>
-                <div className="btn-group">
-                    <button type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                    Filter <span className="caret"></span></button>
-                    <ul className="dropdown-menu" role="menu">
-                    <li><a href="#">All</a></li>
-                    <li><a href="#">Most popular</a></li>
-                    </ul>
-                </div>
-            </div>
-  </div>
+      <div className="filter-category col-xs-12" >
+          <select className="form-control" onChange={this.handleSubmit} value={this.state.value} >
+              <option value="">All</option>
+              {Cat}
+         </select>
+          
+           
+     </div>
   );
   }
 });
