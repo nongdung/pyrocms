@@ -7,21 +7,8 @@ class Products_m extends MY_Model
         parent::__construct();
 
     }
-    //update server
-    public function ajaxlist($limit = 2, $offset = 0){
-        $this->db->select("*");
-        $this->db->from('products_products');
-        $this->db->join('files', 'files.id = products_products.p_image','inner');
-        $this->db->limit($limit, $offset);
-        $query = $this->db->get();
-        $data = $query->result_array();
-        foreach ($data as $index=>$value){
-            $data[$index]["path"] = str_replace("{{ url:site }}",BASE_URL,$value['path']);
-        }
-        return $data;
-    }
 
-    public function detail_products($id_p)
+    public function detail_products($id_p=null)
     {            
         $this->db->select("products_products.id"); 
         $this->db->select("products_products.p_id");
@@ -31,15 +18,10 @@ class Products_m extends MY_Model
         $this->db->select("products_products.p_long_description");
         $this->db->select("products_products.category_id");
         $this->db->select("files.path");
-        $this->db->select("products_comment.comments"); 
-        $this->db->select("products_comment.user_id_c"); 
-        $this->db->select("products_comment.reply_id");
-        $this->db->select("products_products.p_image");
-        
-        $this->db->where("products_products.id",$id_p);
         $this->db->from("products_products");
-        $this->db->join('files', 'files.id = products_products.p_image', 'inner');
-        $this->db->join('products_comment', 'products_comment.product_id_c = products_products.id', 'inner');
+        $this->db->where("products_products.id",$id_p);
+        $this->db->join('files', 'files.id = products_products.p_image');
+        
         $query = $this->db->get();
         $data = $query->result_array();
         foreach ($data as $index=>$value){
@@ -48,12 +30,13 @@ class Products_m extends MY_Model
         return $data;
     }
 
-    public function comments($id_p)
+    public function comments($limit=2,$offset=0,$id_p=null)
     {
-        $this->db->select("*");
+        $this->db->select("comments");
+        $this->db->from("products_comment");
         $this->db->where("products_products.id",$id_p);
-        $this->db->from("products_products");
-        $this->db->join('products_comment', 'products_comment.product_id_c = products_products.id', 'inner');
+        $this->db->join('products_products', 'products_products.id = products_comment.product_id_c');
+        $this->db->limit($limit,$offset);
         $query = $this->db->get();
         return $query->result_array();
     }
