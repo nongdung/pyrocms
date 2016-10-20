@@ -8,29 +8,69 @@ class Products extends Public_Controller{
         $this->load->driver('Streams');
         $this->lang->load('products');
         $this->load->model("products_m");
+        $this->load->model("homepage_m");
+        $this->load->library('session');
     }
     
     # hiển thị categories
     public function index()
     {
          $this->template
-             ->title($this->module_details['name'])
-             ->build('homepage/index');    
+            ->title($this->module_details['name'])
+            ->append_metadata(' <script src="https://unpkg.com/react@15.3.0/dist/react.js"></script>')
+            ->append_metadata('<script src="https://unpkg.com/react-dom@15.3.0/dist/react-dom.js"></script>')
+            ->append_metadata('<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>')
+            ->append_metadata('<script src="https://unpkg.com/jquery@3.1.0/dist/jquery.min.js"></script>')
+            ->append_metadata('<link rel="stylesheet" href="{{ url:base }}/addons/shared_addons/modules/products/css/mystyle.css">')
+            ->build('homepage/index');    
     }
     
     # hiển thị chi tiết sản phẩm 
     public function detail($id_p)
     {
-        $data = $this->streams->entries->get_entry($id_p,'products','products',true);
+        $this->session->set_userdata('id_p', $id_p);
         $this->template
-            ->title($this->module_details['name'])
-            ->build('design/product',$data); 
+                ->title($this->module_details['name'])
+                ->append_metadata('<script src="https://unpkg.com/react@15.3.0/dist/react.js"></script>')
+                ->append_metadata('<script src="https://unpkg.com/react-dom@15.3.0/dist/react-dom.js"></script>')
+                ->append_metadata('<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>')
+                ->append_metadata('<script src="https://unpkg.com/jquery@3.1.0/dist/jquery.min.js"></script>')
+                ->append_metadata('<link rel="stylesheet" href="{{ url:base }}/addons/shared_addons/modules/products/css/mystyle.css">')
+                ->build('detail/detail_p');                     
+    }
+    
+    public function ajaxdetail()
+    {
+        $id_p =  $this->session->userdata('id_p');;
+        $data = $this->products_m->detail_products($id_p);
+        
+        $json = $this->output
+                        ->set_content_type('application/json')
+                        ->set_output(json_encode($data));      
     }
     # hiển thị comments
-    public function get_comments()
-    {     
-    }
+    public function comment()
+    {   
+        $id_p =  $this->session->userdata('id_p');
+        
+        $limit  = $this->input->post("limit");
+        $offset = $this->input->post("offset");
 
+        if($this->input->post())
+        {
+            $data = array (
+                'comments'     => $this->input->post('comment'),
+                'product_id_c' => $id_p,
+                'user_id_c'    => '1',
+                'created'      => date('Y-m-d H:i:s')
+            ); 
+            $this->products_m->insert_comments($data);
+        }
+        $data = $this->products_m->comments($limit,$offset,$id_p);
+        #echo "<pre>"; print_r($data); die();
+        $json = $this->output->set_content_type('application/json')->set_output(json_encode($data));        
+    }
+    
     # tìm kiếm
     public function search()
     {
@@ -41,12 +81,20 @@ class Products extends Public_Controller{
         //receive value limit from loadmore button
         $limit =(int) $this->input->post('limit');
         $offset =(int) $this->input->post('offset');
-
-        $data = $this->products_m->ajaxlist($limit, $offset);
+        $cat = $this->input->post('cat_id');
+        $f_id = $this->input->post('f_id');
+        $data = $this->homepage_m->ajaxlist($limit, $offset, $cat, $f_id);
         $json = $this->output
                     ->set_content_type('application/json')
                     ->set_output(json_encode($data));  
+                
+   }
    
+   public function ajaxcategories(){
+       $data = $this->homepage_m->ajaxcategories();
+       $json = $this->output
+                    ->set_content_type('application/json')
+                    ->set_output(json_encode($data));  
    }
 }
 
