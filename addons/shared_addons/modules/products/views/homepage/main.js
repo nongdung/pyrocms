@@ -226,7 +226,16 @@ var Filter = React.createClass({
 
 //List product
 var Ls = React.createClass({
+  getInitialState: function(){
+    return {
+      pro_id: ''
+    }
+  },
   
+  handleShowComment: function(e){
+    
+    console.log('you are here boy');
+  },
   render: function(){
     
     return(
@@ -254,7 +263,7 @@ var Ls = React.createClass({
           
           <div className="btn-group btn-group-justified">
               <a href="#" className="btn btn-default"><span className="glyphicon glyphicon-heart"></span></a>
-              <a className="btn btn-default" role="button" data-toggle="collapse" href={"#collapse"+this.props.id} aria-expanded="false" aria-controls={"collapse"+this.props.id}><span className="glyphicon glyphicon-comment"></span></a>
+              <a className="btn btn-default" role="button" data-toggle="collapse" href={"#collapse"+this.props.id} aria-expanded="false" aria-controls={"collapse"+this.props.id} onClick={this.handleShowComment}><span className="glyphicon glyphicon-comment"></span></a>
               <a href="#" className="btn btn-default"><span className="glyphicon glyphicon-share-alt"></span></a>
           </div>  
 
