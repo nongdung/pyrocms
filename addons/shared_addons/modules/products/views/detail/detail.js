@@ -4,12 +4,10 @@ var Detail = React.createClass({
 	    	url: this.props.url ,
 	    	dataType: 'json',
 	    	cache: false,
-	    	type: 'POST',
-	      	data: this.state.query,
 	    	success: function(data) {
-	        	this.setState({data: data, id_p:this.state.id});
+	        	this.setState({data: data});
 	        	console.log('loadDetailFromServer');
-	        	console.log(this.state);
+	        	console.log(data);
 	      	}.bind(this),
 	      	error: function(xhr, status, err) {
 	        	console.error(this.props.url, status, err.toString());
@@ -17,7 +15,7 @@ var Detail = React.createClass({
 	    });
 	},
 	getInitialState: function() {
-	    return {data: [], id_p:''};
+	    return {data: []};
 	},
 	componentDidMount: function() {
 		this.loadDetailFromServer();  
