@@ -41,9 +41,10 @@ class Products extends Public_Controller{
     
     public function ajaxdetail()
     {
-        $id_p =  $this->session->userdata('id_p');;
+        $id_p = $this->session->userdata('id_p');
+
         $data = $this->products_m->detail_products($id_p);
-        
+
         $json = $this->output
                         ->set_content_type('application/json')
                         ->set_output(json_encode($data));      
@@ -51,9 +52,10 @@ class Products extends Public_Controller{
     # hiển thị comments
     public function comment()
     {   
-        $id_p =  $this->session->userdata('id_p');
-        
-        $limit  = $this->input->post("limit");
+        $id_p =  $this->session->userdata('id_p');    
+
+        #$limit  = $this->input->post("limit");
+        $limit  = 100;
         $offset = $this->input->post("offset");
 
         if($this->input->post())
@@ -66,18 +68,27 @@ class Products extends Public_Controller{
             ); 
             $this->products_m->insert_comments($data);
         }
-        $data = $this->products_m->comments($limit,$offset,$id_p);
-        #echo "<pre>"; print_r($data); die();
-        $json = $this->output->set_content_type('application/json')->set_output(json_encode($data));        
+            $data = $this->products_m->comments($limit,$offset,$id_p);
+            $json = $this->output->set_content_type('application/json')->set_output(json_encode($data));         
     }
     
+    public function reply_comments()
+    {
+        $reply_id = 6;
+        $limit  = $this->input->post("limit");
+        $offset = $this->input->post("offset");
+        $data = $this->products_m->reply_comments($limit,$offset,$reply_id);
+        $json = $this->output->set_content_type('application/json')->set_output(json_encode($data)); 
+        #echo "<pre>"; print_r($data); die();
+    }
     # tìm kiếm
     public function search()
     {
+
     }
    
-  //New function here--provide jsondata for react main.js
-   public function ajaxlist(){
+    //New function here--provide jsondata for react main.js
+    public function ajaxlist(){
         //receive value limit from loadmore button
         $limit =(int) $this->input->post('limit');
         $offset =(int) $this->input->post('offset');
@@ -87,14 +98,13 @@ class Products extends Public_Controller{
         $json = $this->output
                     ->set_content_type('application/json')
                     ->set_output(json_encode($data));  
-                
-   }
+    }
    
-   public function ajaxcategories(){
+    public function ajaxcategories(){
        $data = $this->homepage_m->ajaxcategories();
        $json = $this->output
                     ->set_content_type('application/json')
                     ->set_output(json_encode($data));  
-   }
+    }
 }
 
