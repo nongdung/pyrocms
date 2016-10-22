@@ -43,7 +43,7 @@ class Homepage_m extends MY_Model
 
     public function comments($limit=2,$offset=0,$pro_id=null)
     {
-        $this->db->select("comments,product_id_c");
+        $this->db->select("comments,product_id_c,products_comment.id");
         $this->db->from("products_comment");
         $this->db->where("products_products.id",$pro_id);
         $this->db->join('products_products', 'products_products.id = products_comment.product_id_c');

@@ -143,7 +143,7 @@ var Blog = React.createClass({
     return(
       <div className="main">
         <div className="row">
-          <Searchbox />
+          
           <div className="filter col-xs-12">
           <Category cat = {this.state.cat} onhanldeChange={this.handleCat}/>
           <Filter onhandleFilterChange={this.handleFilterChange} />
@@ -290,14 +290,7 @@ var Ls = React.createClass({
               <a href="#" className="btn btn-default"><span className="glyphicon glyphicon-share-alt"></span></a>
           </div>  
 
-         <div className="collapse" id={"collapse"+this.props.id}>
-            
-            {this.props.comment.map((a)=>{ if(this.props.id == a.product_id_c){ return(
-                <div className="well">
-            {a.comments}
-                </div>)}
-            })}    
-          </div> 
+        <CommentBox datacomment={this.props.comment} id_product={this.props.id} /> 
       
      
       </div>
@@ -309,18 +302,33 @@ var CommentBox = React.createClass({
   
   render: function(){
     return(
-        <div className="collapse" id={"collapse"+this.props.id}>
         
-        {this.props.datacomment.map((a)=>{ return(
-            <div className="well">
-                  {a.comments}
-            </div>)
-        })}    
-          </div> 
+         <div className="commentbox collapse" id={"collapse"+this.props.id_product}>
+            <CommentForm />
+            {this.props.datacomment.map((a)=>{ if(this.props.id_product == a.product_id_c){ return(
+                <div className="well" key={a.id}>
+            {a.comments}
+                </div>)}
+            })}    
+          </div>  
     );
   }
 });
 
+var CommentForm = React.createClass({
+  render: function(){
+    return(
+      <div className="commentForm input-group col-xs-12">
+            <input type="text" className="form-control" placeholder="Say something in your mind ....." />
+            <span className="input-group-btn">
+                <button className="btn btn-danger" type="button" >
+                    <span className="glyphicon glyphicon-hand-up"></span>
+                </button>
+            </span>
+        </div>
+    )
+  }
+});
 
 ReactDOM.render(
 <Blog url={window.location+"/ajaxlist"}/>,
