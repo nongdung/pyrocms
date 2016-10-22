@@ -1,4 +1,8 @@
 var Blog = React.createClass({
+  getInitialState: function() {
+    return {data: [], query:{limit:3,offset:0,cat_id:'',f_id:'1',pro_id:''}, cat:[] ,comment:[]};
+  },
+
   loadProductFromServer: function() {
      //call data from server
      $.ajax({
@@ -8,8 +12,8 @@ var Blog = React.createClass({
       data: this.state.query,
       success: function(data) {
         this.setState({data: data, query: this.state.query});
-        console.log("loadProductFromServer");
-        console.log(this.state);
+        // console.log("loadProductFromServer");
+        // console.log(this.state);
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(this.props.url, status, err.toString());
@@ -27,8 +31,8 @@ var Blog = React.createClass({
         data: this.state.cat,
         success: function(data) {
           this.setState({data: this.state.data ,query:this.state.query,cat:data});
-         console.log("loadCategoriesFromServer");
-          console.log(this.state);
+        //  console.log("loadCategoriesFromServer");
+        //   console.log(this.state);
         }.bind(this),
         error: function(xhr, status, err) {
           console.error(window.location+'/ajaxcategories', status, err.toString());
@@ -36,9 +40,7 @@ var Blog = React.createClass({
     });
   },
  //origin state
-  getInitialState: function() {
-    return {data: [], query:{limit:3,offset:0,cat_id:'',f_id:'1'}, cat:[] };
-  },
+  
     
    componentDidMount: function() {
     this.loadProductFromServer();
@@ -112,14 +114,30 @@ var Blog = React.createClass({
     console.log(f_id);
   },
 
-  render: function(){
-    //map data after call-> set props for List product below
-    var List = this.state.data.map(function(a) {
-      return (
-        <Ls p_name={a.p_name} id={a.id} key={a.id} p_price={a.p_price} p_short_description={a.p_short_description} p_image={a.path}>
-        </Ls>
-      );
+  handleComment:function(e){
+    var pro_id = e.pro_id;
+    var limit = this.state.query.limit;
+    var offset=0;
+
+    $.ajax({
+      url:window.location+'/ajaxcomment',
+      dataType:'json',
+      type: 'POST',
+      data: {limit:this.state.query.limit, offset: offset,pro_id: pro_id},
+      success: function(newdata){
+        var a = this.state.comment;
+        var b = a.concat(newdata);
+        this.setState({data: this.state.data,query: {limit:limit, offset: offset,cat_id:this.state.query.cat_id,f_id:this.state.query.f_id,pro_id:pro_id},comment:b});
+        console.log(this.state);
+      }.bind(this),
+      error: function(xhr, status, err){
+        console.error(window.location+'/ajaxcomment', status, err.toString());
+      }.bind(this)
     });
+  },
+
+  render: function(){
+    
 
     
     return(
@@ -133,7 +151,9 @@ var Blog = React.createClass({
         </div>
         <div className="row">
           <div className="product">
-            {List}
+          {this.state.data.map((a)=>{
+            return <Ls onhandleComment={this.handleComment} p_name={a.p_name} id={a.id} key={a.id} p_price={a.p_price} p_short_description={a.p_short_description} p_image={a.path} comment={this.state.comment}/>
+          })}
           </div>
         </div>
         <div className="row text-center">
@@ -228,16 +248,19 @@ var Filter = React.createClass({
 var Ls = React.createClass({
   getInitialState: function(){
     return {
-      pro_id: ''
+      pro_id: '0', disabled: false
     }
   },
   
   handleShowComment: function(e){
-    
-    console.log('you are here boy');
+    this.setState({ pro_id:e.target.name, disabled: true});
+    var pro_id = e.target.name;
+    this.props.onhandleComment({pro_id:pro_id});
+    this.setState({pro_id:'0'})
+    console.log(pro_id);
   },
   render: function(){
-    
+    var disabled = this.state.disabled ? 'disabled' : ''
     return(
       <div className="ls col-xs-12" id="ls">
           <div className="image col-xs-12">
@@ -260,30 +283,43 @@ var Ls = React.createClass({
               <p>{this.props.p_short_description}</p>
               <a href="#"> Read more </a>
           </div>
-          
-          <div className="btn-group btn-group-justified">
+        
+          <div className="btn-group btn-group-justified ">
               <a href="#" className="btn btn-default"><span className="glyphicon glyphicon-heart"></span></a>
-              <a className="btn btn-default" role="button" data-toggle="collapse" href={"#collapse"+this.props.id} aria-expanded="false" aria-controls={"collapse"+this.props.id} onClick={this.handleShowComment}><span className="glyphicon glyphicon-comment"></span></a>
+              <a disabled={this.disabled} className="btn btn-default" role="button" data-parent="#accordion" data-toggle="collapse" href={"#collapse"+this.props.id} aria-expanded="false" aria-controls={"collapse"+this.props.id} name={this.props.id} onClick={this.handleShowComment} ><span className="glyphicon glyphicon-comment"></span></a>
               <a href="#" className="btn btn-default"><span className="glyphicon glyphicon-share-alt"></span></a>
           </div>  
 
-          <div className="collapse" id={"collapse"+this.props.id}>
-            <div className="well">
-                  asdfasdljkfhasljasdfhjasdfhjklasdfhjkasdfhjkasdfasdfl
-            </div>
-            <div className="well">
-                  asdfasdljkfhasljasdfhjasdfhjklasdfhjkasdfhjkasdfasdfl
-            </div>
-            <div className="well">
-                  asdfasdljkfhasljasdfhjasdfhjklasdfhjkasdfhjkasdfasdfl
-            </div>
+         <div className="collapse" id={"collapse"+this.props.id}>
+            
+            {this.props.comment.map((a)=>{ if(this.props.id == a.product_id_c){ return(
+                <div className="well">
+            {a.comments}
+                </div>)}
+            })}    
           </div> 
-               
+      
+     
       </div>
     );
   }
 }); 
 
+var CommentBox = React.createClass({
+  
+  render: function(){
+    return(
+        <div className="collapse" id={"collapse"+this.props.id}>
+        
+        {this.props.datacomment.map((a)=>{ return(
+            <div className="well">
+                  {a.comments}
+            </div>)
+        })}    
+          </div> 
+    );
+  }
+});
 
 
 ReactDOM.render(
