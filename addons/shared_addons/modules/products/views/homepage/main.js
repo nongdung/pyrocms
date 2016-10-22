@@ -286,7 +286,7 @@ var Ls = React.createClass({
         
           <div className="btn-group btn-group-justified ">
               <a href="#" className="btn btn-default"><span className="glyphicon glyphicon-heart"></span></a>
-              <a disabled={this.disabled} className="btn btn-default" role="button" data-parent="#accordion" data-toggle="collapse" href={"#collapse"+this.props.id} aria-expanded="false" aria-controls={"collapse"+this.props.id} name={this.props.id} onClick={this.handleShowComment} ><span className="glyphicon glyphicon-comment"></span></a>
+              <a  className="btn btn-default" role="button" data-parent="#accordion" data-toggle="collapse" href={"#collapse"+this.props.id} aria-expanded="false" aria-controls={"collapse"+this.props.id} name={this.props.id} onClick={this.handleShowComment} disabled={this.state.disabled}><span className="glyphicon glyphicon-comment"></span></a>
               <a href="#" className="btn btn-default"><span className="glyphicon glyphicon-share-alt"></span></a>
           </div>  
 
