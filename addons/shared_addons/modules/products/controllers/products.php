@@ -106,5 +106,14 @@ class Products extends Public_Controller{
                     ->set_content_type('application/json')
                     ->set_output(json_encode($data));  
     }
+    public function ajaxcomment(){
+        $limit =(int) $this->input->post('limit');
+        $offset =(int) $this->input->post('offset');
+        $pro_id = $this->input->post('pro_id');
+        $data =  $this->homepage_m->comments($limit, $offset, $pro_id);
+        $json = $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode($data));  
+   }
 }
 
