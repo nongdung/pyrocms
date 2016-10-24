@@ -12,8 +12,8 @@ var Blog = React.createClass({
       data: this.state.query,
       success: function(data) {
         this.setState({data: data, query: this.state.query});
-        // console.log("loadProductFromServer");
-        // console.log(this.state);
+         console.log("loadProductFromServer");
+         console.log(this.state);
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(this.props.url, status, err.toString());
@@ -31,8 +31,8 @@ var Blog = React.createClass({
         data: this.state.cat,
         success: function(data) {
           this.setState({data: this.state.data ,query:this.state.query,cat:data});
-        //  console.log("loadCategoriesFromServer");
-        //   console.log(this.state);
+          console.log("loadCategoriesFromServer");
+           console.log(this.state);
         }.bind(this),
         error: function(xhr, status, err) {
           console.error(window.location+'/ajaxcategories', status, err.toString());
@@ -123,7 +123,7 @@ var Blog = React.createClass({
       url:window.location+'/ajaxcomment',
       dataType:'json',
       type: 'POST',
-      data: {limit:this.state.query.limit, offset: offset,pro_id: pro_id},
+      data: {limit:3, offset: offset,pro_id: pro_id},
       success: function(newdata){
         var a = this.state.comment;
         var b = a.concat(newdata);
@@ -136,10 +136,31 @@ var Blog = React.createClass({
     });
   },
 
-  render: function(){
+  handleSubmitComment:function(e){
+    var comment = e.comment;
+    var pro_id = e.pro_id;
+    var limit = 1;
     
+    $.ajax({
+      url:window.location+'/ajaxcomment',
+      dataType:'json',
+      type: 'POST',
+      data: {limit:limit,comment:comment,asd:1, pro_id:pro_id},
+      success: function(newdata){
+        var a = newdata;
+        var b = a.concat(this.state.comment);
+        this.setState({data: this.state.data,query: this.state.query,comment:b});
+        console.log(this.state);
+      }.bind(this),
+      error: function(xhr, status, err){
+        this.setState({comment:comment});
+        console.error(window.location+'/ajaxcomment', status, err.toString());
+      }.bind(this)
+    });
+  },
 
-    
+  render: function(){
+ 
     return(
       <div className="main">
         <div className="row">
@@ -152,7 +173,7 @@ var Blog = React.createClass({
         <div className="row">
           <div className="product">
           {this.state.data.map((a)=>{
-            return <Ls onhandleComment={this.handleComment} p_name={a.p_name} id={a.id} key={a.id} p_price={a.p_price} p_short_description={a.p_short_description} p_image={a.path} comment={this.state.comment}/>
+            return <Ls onhandleComment={this.handleComment} p_name={a.p_name} id={a.id} key={a.id} p_price={a.p_price} p_short_description={a.p_short_description} p_image={a.path} comment={this.state.comment} onhandleSubmitComment={this.handleSubmitComment}/>
           })}
           </div>
         </div>
@@ -248,13 +269,24 @@ var Filter = React.createClass({
 var Ls = React.createClass({
   getInitialState: function(){
     return {
-      pro_id: '0', disabled: false
+      pro_id: '0', disabled: false,comment:''
     }
   },
-  
+  handleSubmitCommet: function(e){
+    console.log('you are here in Ls');
+    this.setState({comment:e.comment});
+    var comment = e.comment;
+    var pro_id = e.pro_id;
+    this.props.onhandleSubmitComment({comment:comment,pro_id:pro_id});
+    console.log(e);
+  },
+
   handleShowComment: function(e){
     this.setState({ pro_id:e.target.name, disabled: true});
     var pro_id = e.target.name;
+    if(!pro_id){
+      var pro_id = this.props.id;
+    }
     this.props.onhandleComment({pro_id:pro_id});
     this.setState({pro_id:'0'})
     console.log(pro_id);
@@ -286,11 +318,11 @@ var Ls = React.createClass({
         
           <div className="btn-group btn-group-justified ">
               <a href="#" className="btn btn-default"><span className="glyphicon glyphicon-heart"></span></a>
-              <a  className="btn btn-default" role="button" data-parent="#accordion" data-toggle="collapse" href={"#collapse"+this.props.id} aria-expanded="false" aria-controls={"collapse"+this.props.id} name={this.props.id} onClick={this.handleShowComment} disabled={this.state.disabled}><span className="glyphicon glyphicon-comment"></span></a>
+              <a name={this.props.id} className="btn btn-default" role="button" data-parent="#accordion" data-toggle="collapse" href={"#collapse"+this.props.id} aria-expanded="false" aria-controls={"collapse"+this.props.id}  onClick={this.handleShowComment} disabled={this.state.disabled}><span className="glyphicon glyphicon-comment"></span></a>
               <a href="#" className="btn btn-default"><span className="glyphicon glyphicon-share-alt"></span></a>
           </div>  
 
-        <CommentBox datacomment={this.props.comment} id_product={this.props.id} /> 
+        <CommentBox datacomment={this.props.comment} id_product={this.props.id} handleSubmitComment={this.handleSubmitCommet}/> 
       
      
       </div>
@@ -299,12 +331,24 @@ var Ls = React.createClass({
 }); 
 
 var CommentBox = React.createClass({
-  
+  getInitialState: function(){
+    return {
+      comment: '',pro_id: ''
+    }
+  },
+  onhandleSubmitCommet:function(e){
+    this.setState({comment:e.comment,pro_id:this.props.id_product});
+    var comment = e.comment;
+    var pro_id = e.pro_id;
+    this.props.handleSubmitComment({comment:comment,pro_id:pro_id});
+    
+    console.log(e);
+  },
   render: function(){
     return(
         
          <div className="commentbox collapse" id={"collapse"+this.props.id_product}>
-            <CommentForm />
+            <CommentForm onhandleSubmitComment={this.onhandleSubmitCommet} id_product={this.props.id_product}/>
             {this.props.datacomment.map((a)=>{ if(this.props.id_product == a.product_id_c){ return(
                 <div className="well" key={a.id}>
             {a.comments}
@@ -316,17 +360,42 @@ var CommentBox = React.createClass({
 });
 
 var CommentForm = React.createClass({
+  getInitialState: function(){
+    return {
+      comment: '',pro_id:''
+    }
+  },
+
+  handleTextChange: function(e){
+    this.setState({comment: e.target.value})
+  },
+
+  handleSubmitCommet: function(e){
+    e.preventDefault();
+    var comment = this.state.comment.trim();
+    this.props.onhandleSubmitComment({comment:comment,pro_id:this.props.id_product});
+    this.setState({comment:'',pro_id:''});
+    console.log(this.state);
+  },
+
   render: function(){
     return(
+     <form className="commentForm" onSubmit={this.handleSubmitCommet}>
       <div className="commentForm input-group col-xs-12">
-            <input type="text" className="form-control" placeholder="Say something in your mind ....." />
+            <input 
+            type="text" className="form-control" 
+            placeholder="Say something in your mind ....." 
+            value={this.state.comment}
+            onChange={this.handleTextChange}
+            />
             <span className="input-group-btn">
-                <button className="btn btn-danger" type="button" >
+                <button className="btn btn-danger" type="submit" value="Comment">
                     <span className="glyphicon glyphicon-hand-up"></span>
                 </button>
             </span>
         </div>
-    )
+        </form>
+    );
   }
 });
 
