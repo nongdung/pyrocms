@@ -46,6 +46,7 @@ class Homepage_m extends MY_Model
         $this->db->select("comments,product_id_c,products_comment.id");
         $this->db->from("products_comment");
         $this->db->where("products_products.id",$pro_id);
+        $this->db->order_by('id','DESC');
         $this->db->join('products_products', 'products_products.id = products_comment.product_id_c');
         $this->db->limit($limit,$offset);
         $query = $this->db->get();
