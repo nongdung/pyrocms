@@ -347,8 +347,18 @@ var Ls = React.createClass({
           </div>
         
           <div className="btn-group btn-group-justified ">
-              <a href="#" className="btn btn-default"><span className="glyphicon glyphicon-heart"></span></a>
-              <a name={this.props.id} className="btn btn-default" role="button" data-parent="#accordion" data-toggle="collapse" href={"#collapse"+this.props.id} aria-expanded="false" aria-controls={"collapse"+this.props.id}  onClick={this.handleShowComment} disabled={this.state.disabled}><span className="glyphicon glyphicon-comment"></span></a>
+              <a href="#" className="btn btn-default"><span className="glyphicon glyphicon-heart"></span><span>306</span></a>
+              <a name={this.props.id} 
+              className="btn btn-default" 
+              role="button"
+              data-parent="#accordion" 
+              data-toggle="collapse" 
+              href={"#collapse"+this.props.id} 
+              aria-expanded="false" 
+              aria-controls={"collapse"+this.props.id}  
+              onClick={this.handleShowComment} 
+              disabled={this.state.disabled}>
+                <span className="glyphicon glyphicon-comment"></span></a>
               <a href="#" className="btn btn-default"><span className="glyphicon glyphicon-share-alt"></span></a>
           </div>  
 
@@ -385,10 +395,21 @@ var CommentBox = React.createClass({
             <CommentForm onhandleSubmitComment={this.onhandleSubmitCommet} id_product={this.props.id_product}/>
             {this.props.datacomment.map((a)=>{ if(this.props.id_product == a.product_id_c){ return(
                 <div className="well" key={a.id}>
-            {a.comments}
+                  <div>
+                  {a.comments}
+                  </div>
+                  <a
+                  role="button" 
+                  data-parent="#accordion" 
+                  data-toggle="collapse" 
+                  href={"#collapseone"+a.id}
+                  aria-expanded="false" 
+                  aria-controls={"collapseone"+a.id} 
+                    >reply</a>
+                  <Reply comment_id = {a.id}/>  
                 </div>)}
             })} 
-
+            
             <button className="loadmore btn btn-default" onClick={this.handleLoadmorecomment}> Load more comment...</button>    
           </div>  
     );
@@ -439,6 +460,17 @@ var CommentForm = React.createClass({
   }
 });
 
+var Reply = React.createClass({
+  render: function(){
+    return(
+      <div className="commentbox collapse" id={"collapseone"+this.props.comment_id}>
+          <div className="well">
+          asdfasdfasdfasdf
+          </div>
+      </div>
+    );
+  }
+});
 ReactDOM.render(
 <Blog url={window.location+"/ajaxlist"}/>,
 document.getElementById('product')
