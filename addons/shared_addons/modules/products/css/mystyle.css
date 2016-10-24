@@ -19,8 +19,8 @@ body{
 /*search box*/
 .input-group[class*=col-]{
     padding-top:5px;
-    padding-left: 15px;
-    padding-right: 15px;
+    padding-left: 0px;
+    padding-right: 0px;
 }
 
 /*dropdown filter + category*/
@@ -70,6 +70,9 @@ img{
 /*commentbox homepage*/
 .well{
     margin-bottom: 0;
+}
+.commentbox {
+    background-color: #f5f5f5;
 }
 /*ipad screen design*/ 
 @media screen and (min-width: 768px) {
