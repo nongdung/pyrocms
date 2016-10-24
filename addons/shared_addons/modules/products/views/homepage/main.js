@@ -159,6 +159,28 @@ var Blog = React.createClass({
     });
   },
 
+  handleLoadmorecomment:function(e){
+    console.log('your loadmore is working fine');
+     var pro_id = e.pro_id;
+     var limit = this.state.query.limit;
+     console.log(limit);
+    $.ajax({
+      url:window.location+'/ajaxcomment',
+      dataType:'json',
+      type: 'POST',
+      data: {limit:3,pro_id:pro_id,offset:this.state.query.offset+limit},
+      success: function(newdata){
+        var a = this.state.comment;
+        var b = a.concat(newdata);
+        this.setState({data:this.state.data,query: this.state.query,comment:b});
+        console.log(this.state);
+      }.bind(this),
+      error: function(xhr, status, err){
+        console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    });
+    console.log(e);
+  },
   render: function(){
  
     return(
@@ -173,7 +195,10 @@ var Blog = React.createClass({
         <div className="row">
           <div className="product">
           {this.state.data.map((a)=>{
-            return <Ls onhandleComment={this.handleComment} p_name={a.p_name} id={a.id} key={a.id} p_price={a.p_price} p_short_description={a.p_short_description} p_image={a.path} comment={this.state.comment} onhandleSubmitComment={this.handleSubmitComment}/>
+            return <Ls onhandleComment={this.handleComment} 
+            p_name={a.p_name} id={a.id} key={a.id} p_price={a.p_price} p_short_description={a.p_short_description} p_image={a.path} comment={this.state.comment}
+             onhandleSubmitComment={this.handleSubmitComment}
+             handleLoadmorecomment={this.handleLoadmorecomment}/>
           })}
           </div>
         </div>
@@ -291,6 +316,11 @@ var Ls = React.createClass({
     this.setState({pro_id:'0'})
     console.log(pro_id);
   },
+
+  handleLoadmorecomment:function(e){
+    var pro_id = e.pro_id;
+    this.props.handleLoadmorecomment({pro_id:pro_id});
+  },
   render: function(){
     var disabled = this.state.disabled ? 'disabled' : ''
     return(
@@ -322,7 +352,7 @@ var Ls = React.createClass({
               <a href="#" className="btn btn-default"><span className="glyphicon glyphicon-share-alt"></span></a>
           </div>  
 
-        <CommentBox datacomment={this.props.comment} id_product={this.props.id} handleSubmitComment={this.handleSubmitCommet}/> 
+        <CommentBox datacomment={this.props.comment} id_product={this.props.id} handleSubmitComment={this.handleSubmitCommet} handleLoadmorecomment={this.handleLoadmorecomment}/> 
       
      
       </div>
@@ -344,6 +374,10 @@ var CommentBox = React.createClass({
     
     console.log(e);
   },
+
+  handleLoadmorecomment:function(){
+    this.props.handleLoadmorecomment({pro_id:this.props.id_product});
+  },
   render: function(){
     return(
         
@@ -353,7 +387,9 @@ var CommentBox = React.createClass({
                 <div className="well" key={a.id}>
             {a.comments}
                 </div>)}
-            })}    
+            })} 
+
+            <button className="loadmore btn btn-default" onClick={this.handleLoadmorecomment}> Load more comment...</button>    
           </div>  
     );
   }
@@ -373,6 +409,9 @@ var CommentForm = React.createClass({
   handleSubmitCommet: function(e){
     e.preventDefault();
     var comment = this.state.comment.trim();
+    if(!comment){
+      return;
+    }
     this.props.onhandleSubmitComment({comment:comment,pro_id:this.props.id_product});
     this.setState({comment:'',pro_id:''});
     console.log(this.state);
@@ -387,6 +426,7 @@ var CommentForm = React.createClass({
             placeholder="Say something in your mind ....." 
             value={this.state.comment}
             onChange={this.handleTextChange}
+            required
             />
             <span className="input-group-btn">
                 <button className="btn btn-danger" type="submit" value="Comment">
