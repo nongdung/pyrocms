@@ -107,6 +107,16 @@ class Products extends Public_Controller{
                     ->set_output(json_encode($data));  
     }
     public function ajaxcomment(){
+        if($this->input->post('asd'))
+        {
+            $data = array (
+                'comments'     => $this->input->post('comment'),
+                'product_id_c' => $this->input->post('pro_id'),
+                'user_id_c'    => '1',
+                'created'      => date('Y-m-d H:i:s')
+            ); 
+            $this->products_m->insert_comments($data);
+        }
         $limit =(int) $this->input->post('limit');
         $offset =(int) $this->input->post('offset');
         $pro_id = $this->input->post('pro_id');
