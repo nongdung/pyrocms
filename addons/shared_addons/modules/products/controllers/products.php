@@ -15,14 +15,17 @@ class Products extends Public_Controller{
     # hiển thị categories
     public function index()
     {
-         $this->template
+          $this->template
             ->title($this->module_details['name'])
             ->append_metadata(' <script src="https://unpkg.com/react@15.3.0/dist/react.js"></script>')
             ->append_metadata('<script src="https://unpkg.com/react-dom@15.3.0/dist/react-dom.js"></script>')
             ->append_metadata('<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>')
-            ->append_metadata('<script src="https://unpkg.com/jquery@3.1.0/dist/jquery.min.js"></script>')
+            ->append_metadata('<script src="https://unpkg.com/axios/dist/axios.min.js"></script>')
             ->append_metadata('<link rel="stylesheet" href="{{ url:base }}/addons/shared_addons/modules/products/css/mystyle.css">')
-            ->build('homepage/index');    
+            ->append_metadata('<script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.3.1/redux.min.js"></script>')
+            ->append_metadata('<script src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/4.4.0/react-redux.min.js"></script>')
+            ->append_metadata('<script src="{{ url:base }}addons/shared_addons/modules/products/views/homepage/polyfill.js"></script>')
+            ->build('homepage/index');     
     }
     
     # hiển thị chi tiết sản phẩm 
@@ -79,49 +82,6 @@ class Products extends Public_Controller{
         $json = $this->output->set_content_type('application/json')->set_output(json_encode($data)); 
         #echo "<pre>"; print_r($data); die();
     }
-    # tìm kiếm
-    public function search()
-    {
-
-    }
-   
-    //New function here--provide jsondata for react main.js
-    public function ajaxlist(){
-        //receive value limit from loadmore button
-        $limit =(int) $this->input->post('limit');
-        $offset =(int) $this->input->post('offset');
-        $cat = $this->input->post('cat_id');
-        $f_id = $this->input->post('f_id');
-        $data = $this->homepage_m->ajaxlist($limit, $offset, $cat, $f_id);
-        $json = $this->output
-                    ->set_content_type('application/json')
-                    ->set_output(json_encode($data));  
-    }
-   
-    public function ajaxcategories(){
-       $data = $this->homepage_m->ajaxcategories();
-       $json = $this->output
-                    ->set_content_type('application/json')
-                    ->set_output(json_encode($data));  
-    }
-    public function ajaxcomment(){
-        if($this->input->post('asd'))
-        {
-            $data = array (
-                'comments'     => $this->input->post('comment'),
-                'product_id_c' => $this->input->post('pro_id'),
-                'user_id_c'    => '1',
-                'created'      => date('Y-m-d H:i:s')
-            ); 
-            $this->products_m->insert_comments($data);
-        }
-        $limit =(int) $this->input->post('limit');
-        $offset =(int) $this->input->post('offset');
-        $pro_id = $this->input->post('pro_id');
-        $data =  $this->homepage_m->comments($limit, $offset, $pro_id);
-        $json = $this->output
-                ->set_content_type('application/json')
-                ->set_output(json_encode($data));  
-   }
+  
 }
 
