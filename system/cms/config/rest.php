@@ -148,7 +148,7 @@ $config['rest_keys_table'] = 'api_keys';
 	) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 |
 */
-$config['rest_enable_keys'] = true;
+$config['rest_enable_keys'] = false;
 
 /*
 |--------------------------------------------------------------------------
@@ -211,7 +211,7 @@ $config['rest_logs_table'] = 'api_logs';
 	) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 |
 */
-$config['rest_enable_logging'] = true;
+$config['rest_enable_logging'] = false;
 
 /*
 |--------------------------------------------------------------------------
