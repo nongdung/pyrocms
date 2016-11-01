@@ -36,12 +36,16 @@ class Products_m extends MY_Model
         $this->db->select("products_comment.id as com_id");
         $this->db->select("products_comment.comments");
         $this->db->select("products_comment.reply_id");
+        $this->db->select("products_comment.created");
+
         $this->db->from("products_comment");
         $this->db->where("products_products.id",$id_p);
+        $this->db->order_by('products_comment.id','DESC');
         $this->db->join('products_products', 'products_products.id = products_comment.product_id_c');
         $this->db->limit($limit,$offset);
         $query = $this->db->get();
         return $query->result_array();
+        
     }
 
     public function reply_comments($limit=2,$offset=0,$reply_id)

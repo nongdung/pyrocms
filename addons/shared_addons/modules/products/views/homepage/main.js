@@ -2,9 +2,15 @@ var Blog = React.createClass({
   getInitialState: function() {
     return {data: [], query:{limit:3,offset:0,cat_id:'',f_id:'1',pro_id:''}, cat:[] ,comment:[]};
   },
-
+  componentDidMount: function() {
+    this.loadProductFromServer();
+    this.loadCategoriesFromServer();
+    
+  },
   loadProductFromServer: function() {
      //call data from server
+     console.log('origin state');
+     console.log(this.state);
      $.ajax({
       url: this.props.url,
       dataType: 'json',
@@ -32,33 +38,24 @@ var Blog = React.createClass({
         success: function(data) {
           this.setState({data: this.state.data ,query:this.state.query,cat:data});
           console.log("loadCategoriesFromServer");
-           console.log(this.state);
+          console.log(this.state);
         }.bind(this),
         error: function(xhr, status, err) {
           console.error(window.location+'/ajaxcategories', status, err.toString());
         }.bind(this)
     });
   },
- //origin state
-  
-    
-   componentDidMount: function() {
-    this.loadProductFromServer();
-    this.loadCategoriesFromServer();
-    
-  },
-
- //loadmore button-> load 3 more product with limit=1
-  handleSubmitloadmore: function(e) {
+ 
+//LOADMORE PRODUCT   
+  handleProductloadmore: function(e) {
       e.preventDefault();
       var limit = 3;
       var offset = this.state.query.offset+limit;
-      // TODO: send request to the server
       $.ajax({
-      url: this.props.url,
-      dataType: 'json',
-      type: 'POST',
-      data: {limit:limit, offset: offset,cat_id:this.state.query.cat_id,f_id:this.state.query.f_id},
+        url: this.props.url,
+        dataType: 'json',
+        type: 'POST',
+        data: {limit:limit, offset: offset,cat_id:this.state.query.cat_id,f_id:this.state.query.f_id},
       success: function(newdata) {
         var a = this.state.data;
         var b = a.concat(newdata);
@@ -72,6 +69,7 @@ var Blog = React.createClass({
         });
       },
 
+  // Function to change CATEGORY -> product for each category
   handleCat: function(e){
     var cat_id = e.cat_id;
     var limit = this.state.query.limit;
@@ -93,6 +91,7 @@ var Blog = React.createClass({
   });
   },
 
+  //Function SORT BY 
   handleFilterChange: function(e){
     var f_id = e.f_id;
     var limit = this.state.query.limit;
@@ -105,6 +104,7 @@ var Blog = React.createClass({
       data: {limit:this.state.query.limit, offset: offset,cat_id:this.state.query.cat_id,f_id:f_id},
       success: function(data){
         this.setState({data:data,query: {limit:limit, offset: offset,cat_id:this.state.query.cat_id,f_id:f_id}});
+        console.log('FIlter change')
         console.log(this.state);
       }.bind(this),
       error: function(xhr, status, err){
@@ -114,6 +114,7 @@ var Blog = React.createClass({
     console.log(f_id);
   },
 
+  //function Load comment from server
   handleComment:function(e){
     var pro_id = e.pro_id;
     var limit = this.state.query.limit;
@@ -127,7 +128,8 @@ var Blog = React.createClass({
       success: function(newdata){
         var a = this.state.comment;
         var b = a.concat(newdata);
-        this.setState({data: this.state.data,query: {limit:limit, offset: offset,cat_id:this.state.query.cat_id,f_id:this.state.query.f_id,pro_id:pro_id},comment:b});
+        this.setState({data: this.state.data,query: {limit:limit, offset: offset,cat_id:this.state.query.cat_id,f_id:this.state.query.f_id,pro_id:pro_id},offset:0,comment:b});
+        console.log('loadmorecomment');
         console.log(this.state);
       }.bind(this),
       error: function(xhr, status, err){
@@ -136,6 +138,7 @@ var Blog = React.createClass({
     });
   },
 
+  //function add new comment and load back from server
   handleSubmitComment:function(e){
     var comment = e.comment;
     var pro_id = e.pro_id;
@@ -147,9 +150,10 @@ var Blog = React.createClass({
       type: 'POST',
       data: {limit:limit,comment:comment,asd:1, pro_id:pro_id},
       success: function(newdata){
-        var a = newdata;
-        var b = a.concat(this.state.comment);
+        var a = this.state.comment;
+        var b = a.concat(newdata);
         this.setState({data: this.state.data,query: this.state.query,comment:b});
+        console.log('addnewcomment');
         console.log(this.state);
       }.bind(this),
       error: function(xhr, status, err){
@@ -160,26 +164,28 @@ var Blog = React.createClass({
   },
 
   handleLoadmorecomment:function(e){
-    console.log('your loadmore is working fine');
+    console.log(this.state);
+    
      var pro_id = e.pro_id;
-     var limit = this.state.query.limit;
-     console.log(limit);
+     //var limit = this.state.query.limit;
+     console.log(e);
     $.ajax({
       url:window.location+'/ajaxcomment',
       dataType:'json',
       type: 'POST',
-      data: {limit:3,pro_id:pro_id,offset:this.state.query.offset+limit},
+      data: {limit:'hatxi',pro_id:pro_id,offset:0},
       success: function(newdata){
-        var a = this.state.comment;
-        var b = a.concat(newdata);
-        this.setState({data:this.state.data,query: this.state.query,comment:b});
-        console.log(this.state);
+        //var a = newdata;
+        //var b = a.concat(this.state.comment);
+        this.setState({data:this.state.data,comment:newdata});
+       console.log('loadmorecomment');
+       console.log(this.state);
       }.bind(this),
       error: function(xhr, status, err){
         console.error(this.props.url, status, err.toString());
       }.bind(this)
     });
-    console.log(e);
+    
   },
   render: function(){
  
@@ -196,14 +202,14 @@ var Blog = React.createClass({
           <div className="product">
           {this.state.data.map((a)=>{
             return <Ls onhandleComment={this.handleComment} 
-            p_name={a.p_name} id={a.id} key={a.id} p_price={a.p_price} p_short_description={a.p_short_description} p_image={a.path} comment={this.state.comment}
+             p_name={a.p_name} id={a.id} key={a.id} p_price={a.p_price} p_short_description={a.p_short_description} p_image={a.path} comment={this.state.comment}
              onhandleSubmitComment={this.handleSubmitComment}
              handleLoadmorecomment={this.handleLoadmorecomment}/>
           })}
           </div>
         </div>
         <div className="row text-center">
-          <button className="loadmore btn btn-default" onClick={this.handleSubmitloadmore}> Load more...</button>
+          <button className="loadmore btn btn-default" onClick={this.handleProductloadmore}> Load more...</button>
         </div>
       </div>
     );
@@ -392,7 +398,7 @@ var CommentBox = React.createClass({
     return(
         
          <div className="commentbox collapse" id={"collapse"+this.props.id_product}>
-            <CommentForm onhandleSubmitComment={this.onhandleSubmitCommet} id_product={this.props.id_product}/>
+            <button className="loadmore btn btn-default" onClick={this.handleLoadmorecomment}> Load older comment...</button>  
             {this.props.datacomment.map((a)=>{ if(this.props.id_product == a.product_id_c){ return(
                 <div className="well" key={a.id}>
                   <div>
@@ -406,11 +412,12 @@ var CommentBox = React.createClass({
                   aria-expanded="false" 
                   aria-controls={"collapseone"+a.id} 
                     >reply</a>
-                  <Reply comment_id = {a.id}/>  
+                  <ReplyBox comment_id = {a.id}/>  
                 </div>)}
             })} 
             
-            <button className="loadmore btn btn-default" onClick={this.handleLoadmorecomment}> Load more comment...</button>    
+            
+            <CommentForm onhandleSubmitComment={this.onhandleSubmitCommet} id_product={this.props.id_product}/>  
           </div>  
     );
   }
@@ -460,7 +467,7 @@ var CommentForm = React.createClass({
   }
 });
 
-var Reply = React.createClass({
+var ReplyBox = React.createClass({
   render: function(){
     return(
       <div className="commentbox collapse" id={"collapseone"+this.props.comment_id}>

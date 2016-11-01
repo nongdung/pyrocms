@@ -53,21 +53,19 @@ class Products extends Public_Controller{
     public function comment()
     {   
         $id_p =  $this->session->userdata('id_p');    
-
-        #$limit  = $this->input->post("limit");
-        $limit  = 100;
-        $offset = $this->input->post("offset");
-
-        if($this->input->post())
+        if($this->input->post('asd'))
         {
             $data = array (
                 'comments'     => $this->input->post('comment'),
-                'product_id_c' => $id_p,
+                'product_id_c' => $this->input->post('pro_id'),
                 'user_id_c'    => '1',
                 'created'      => date('Y-m-d H:i:s')
             ); 
             $this->products_m->insert_comments($data);
         }
+        $limit  = $this->input->post("limit");
+       
+        $offset = $this->input->post("offset");
             $data = $this->products_m->comments($limit,$offset,$id_p);
             $json = $this->output->set_content_type('application/json')->set_output(json_encode($data));         
     }
