@@ -41,9 +41,8 @@ class Homepage_m extends MY_Model
         return $data;
     }
 
-    public function comments($limit=2,$offset=0,$pro_id=null)
+    public function ajaxcomments($limit=2,$offset=0,$pro_id=null)
     {
-        if($limit!='hatxi'){
             $q =" SELECT * FROM (SELECT comments,product_id_c,default_products_comment.id
                     FROM default_products_comment 
                     INNER JOIN default_products_products 
@@ -53,25 +52,19 @@ class Homepage_m extends MY_Model
                     LIMIT $limit 
                     OFFSET $offset
                     ) AS `table` ORDER by id ASC";
-        }
-        else{
-            $q =" SELECT * FROM (SELECT comments,product_id_c,default_products_comment.id
-                FROM default_products_comment 
-                INNER JOIN default_products_products 
-                ON default_products_comment.product_id_c = default_products_products.id
-                WHERE default_products_products.id = $pro_id 
-                ORDER BY default_products_comment.created DESC
-                
-                ) AS `table` ORDER by id ASC";
-                
-        }
+        
+        
        
         $query = $this->db->query($q);
         return $query->result_array();
 
         
     }
-    
+    public function insert_comments($data)
+    {
+        $this->db->insert("products_comment",$data);
+        return true;
+    }
     /*public function comments($limit=2,$offset=0,$pro_id=null)
     {
         $this->db->select("comments,product_id_c,products_comment.id");

@@ -1,405 +1,225 @@
-var Blog = React.createClass({
-  getInitialState: function() {
-    return {data: [], query:{limit:3,offset:0,cat_id:'',f_id:'1',pro_id:''}, cat:[] ,comment:[]};
-  },
-  componentDidMount: function() {
-    this.loadProductFromServer();
-    this.loadCategoriesFromServer();
-    
-  },
-  loadProductFromServer: function() {
-     //call data from server
-     console.log('origin state');
-     console.log(this.state);
-     $.ajax({
-      url: this.props.url,
-      dataType: 'json',
-      type: 'POST',
-      data: this.state.query,
-      success: function(data) {
-        this.setState({data: data, query: this.state.query});
-         console.log("loadProductFromServer");
-         console.log(this.state);
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.error(this.props.url, status, err.toString());
-      }.bind(this)
-        });
-    
+var ProductList = React.createClass({
+    componentDidMount: function() {
+        this.loadProductFromServer();
+        this.loadCategoryFromServer();
     },
-  loadCategoriesFromServer:function()
-  {
-      
-      $.ajax({
-        url: window.location+'/ajaxcategories',
-        dataType: 'json',
-        type: 'POST',
-        data: this.state.cat,
-        success: function(data) {
-          this.setState({data: this.state.data ,query:this.state.query,cat:data});
-          console.log("loadCategoriesFromServer");
-          console.log(this.state);
-        }.bind(this),
-        error: function(xhr, status, err) {
-          console.error(window.location+'/ajaxcategories', status, err.toString());
-        }.bind(this)
-    });
-  },
- 
-//LOADMORE PRODUCT   
-  handleProductloadmore: function(e) {
-      e.preventDefault();
-      var limit = 3;
-      var offset = this.state.query.offset+limit;
-      $.ajax({
-        url: this.props.url,
-        dataType: 'json',
-        type: 'POST',
-        data: {limit:limit, offset: offset,cat_id:this.state.query.cat_id,f_id:this.state.query.f_id},
-      success: function(newdata) {
-        var a = this.state.data;
-        var b = a.concat(newdata);
-        this.setState({data: b, query: {limit:limit, offset: offset,cat_id:this.state.query.cat_id,f_id:this.state.query.f_id}});
-        console.log("loadmore");
-        console.log(this.state);
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.error(this.props.url, status, err.toString());
-      }.bind(this)
-        });
-      },
-
-  // Function to change CATEGORY -> product for each category
-  handleCat: function(e){
-    var cat_id = e.cat_id;
-    var limit = this.state.query.limit;
-    var offset = 0;
     
-    $.ajax({
-    url: this.props.url,
-    dataType: 'json',
-    type: 'POST',
-    data: {limit:this.state.query.limit, offset: offset,cat_id:cat_id,f_id:this.state.query.f_id},
-    success: function(data) {
-      this.setState({data:data, query: {limit:limit, offset: offset,cat_id:cat_id,f_id:this.state.query.f_id}});
-      console.log("catchange");
-      console.log(this.state);
-    }.bind(this),
-    error: function(xhr, status, err) {
-      console.error(this.props.url, status, err.toString());
-    }.bind(this)
-  });
-  },
+    loadProductFromServer: function() {    
+        axios({
+            url:this.props.url.ajaxlist,
+            //url:"http://localhost/pyrocms-pyrocms/products/apis/ajaxlist",
+            method:'post',
+            data: this.props.query, 
+            
+        })
 
-  //Function SORT BY 
-  handleFilterChange: function(e){
-    var f_id = e.f_id;
-    var limit = this.state.query.limit;
-    var offset=0;
+        .then(function (response) {
+            //console.log(response);
+            this.props.setProducts(response.data);
+        }.bind(this))
+        .catch(function (error) {
+            console.log(error);
+        }.bind(this),);
+    },
 
-    $.ajax({
-      url:this.props.url,
-      dataType:'json',
-      type: 'POST',
-      data: {limit:this.state.query.limit, offset: offset,cat_id:this.state.query.cat_id,f_id:f_id},
-      success: function(data){
-        this.setState({data:data,query: {limit:limit, offset: offset,cat_id:this.state.query.cat_id,f_id:f_id}});
-        console.log('FIlter change')
-        console.log(this.state);
-      }.bind(this),
-      error: function(xhr, status, err){
-        console.error(this.props.url, status, err.toString());
-      }.bind(this)
-    });
-    console.log(f_id);
-  },
-
-  //function Load comment from server
-  handleComment:function(e){
-    var pro_id = e.pro_id;
-    var limit = this.state.query.limit;
-    var offset=0;
-
-    $.ajax({
-      url:window.location+'/ajaxcomment',
-      dataType:'json',
-      type: 'POST',
-      data: {limit:3, offset: offset,pro_id: pro_id},
-      success: function(newdata){
-        var a = this.state.comment;
-        var b = a.concat(newdata);
-        this.setState({data: this.state.data,query: {limit:limit, offset: offset,cat_id:this.state.query.cat_id,f_id:this.state.query.f_id,pro_id:pro_id},offset:0,comment:b});
-        console.log('loadmorecomment');
-        console.log(this.state);
-      }.bind(this),
-      error: function(xhr, status, err){
-        console.error(window.location+'/ajaxcomment', status, err.toString());
-      }.bind(this)
-    });
-  },
-
-  //function add new comment and load back from server
-  handleSubmitComment:function(e){
-    var comment = e.comment;
-    var pro_id = e.pro_id;
-    var limit = 1;
+    loadCategoryFromServer: function(){
+        axios({
+            url:this.props.url.ajaxcategories,
+            method:'post',
+            data:{}
+        })
+        .then(function (response){
+            this.props.setCategories(response.data);
+            //console.log(response);
+        }.bind(this))
+        .catch(function (error){
+            console.log(error);
+        }.bind(this),)
+    },
     
-    $.ajax({
-      url:window.location+'/ajaxcomment',
-      dataType:'json',
-      type: 'POST',
-      data: {limit:limit,comment:comment,asd:1, pro_id:pro_id},
-      success: function(newdata){
-        var a = this.state.comment;
-        var b = a.concat(newdata);
-        this.setState({data: this.state.data,query: this.state.query,comment:b});
-        console.log('addnewcomment');
-        console.log(this.state);
-      }.bind(this),
-      error: function(xhr, status, err){
-        this.setState({comment:comment});
-        console.error(window.location+'/ajaxcomment', status, err.toString());
-      }.bind(this)
-    });
-  },
+    handleProductloadmore: function(e) {
+        e.preventDefault();
+        var limit = 3;
+        var offset = this.props.query.offset+limit;
+        axios({
+            url: this.props.url.ajaxlist,
+            method:'post',
+            data: {limit:limit, offset: offset,cat_id:this.props.query.cat_id,f_id:this.props.query.f_id},
+            
+        })
+        .then(function (response){
+            var a = this.props.data;
+            var b = a.concat(response.data);
+            this.props.loadmoreProducts(b,offset);
+        }.bind(this))
+        .catch(function (error){
+            console.log(error);
+        }.bind(this),)
+        
+    },
 
-  handleLoadmorecomment:function(e){
-    console.log(this.state);
-    
-     var pro_id = e.pro_id;
-     //var limit = this.state.query.limit;
-     console.log(e);
-    $.ajax({
-      url:window.location+'/ajaxcomment',
-      dataType:'json',
-      type: 'POST',
-      data: {limit:'hatxi',pro_id:pro_id,offset:0},
-      success: function(newdata){
-        //var a = newdata;
-        //var b = a.concat(this.state.comment);
-        this.setState({data:this.state.data,comment:newdata});
-       console.log('loadmorecomment');
-       console.log(this.state);
-      }.bind(this),
-      error: function(xhr, status, err){
-        console.error(this.props.url, status, err.toString());
-      }.bind(this)
-    });
-    
-  },
-  render: function(){
- 
+    render: function(){
     return(
-      <div className="main">
-        <div className="row">
-          
-          <div className="filter col-xs-12">
-          <Category cat = {this.state.cat} onhanldeChange={this.handleCat}/>
-          <Filter onhandleFilterChange={this.handleFilterChange} />
-          </div>
-        </div>
-        <div className="row">
-          <div className="product">
-          {this.state.data.map((a)=>{
-            return <Ls onhandleComment={this.handleComment} 
-             p_name={a.p_name} id={a.id} key={a.id} p_price={a.p_price} p_short_description={a.p_short_description} p_image={a.path} comment={this.state.comment}
-             onhandleSubmitComment={this.handleSubmitComment}
-             handleLoadmorecomment={this.handleLoadmorecomment}/>
+        <div className="main">
+            <div className="row">
+                <div className="filter col-xs-12">
+                    <Categories />
+                    <Filters />
+                </div>
+            </div>
+            
+            {this.props.data.map((a)=>{
+            return <Products  
+             p_name={a.p_name} id={a.id} key={a.id} p_price={a.p_price} p_short_description={a.p_short_description} p_image={a.path}/>
           })}
-          </div>
+            
+            <div className="row text-center">
+                <button className="loadmore btn btn-default" onClick={this.handleProductloadmore}> Load more...</button>
+            </div>
         </div>
-        <div className="row text-center">
-          <button className="loadmore btn btn-default" onClick={this.handleProductloadmore}> Load more...</button>
-        </div>
-      </div>
-    );
-  }
+      );
+    }
 });
 
-//SearchBox
-var Searchbox = React.createClass({
-  render: function(){
-    return(
-      <div className="searchbox input-group col-xs-12">
-            <input type="text" className="search-query form-control" placeholder="Search" />
-            <span className="input-group-btn">
-                <button className="btn btn-danger" type="button" >
-                    <span className="glyphicon glyphicon-search"></span>
-                </button>
-            </span>
-        </div>
-    );
-  }
-});
-
-//filter: category
-var Category = React.createClass({
-  getInitialState: function() {
+var Products = React.createClass({
+    getInitialState: function(){
         return {
-            cat_id: ''
+          pro_id: '0', disabled: false,comment:''
         }
     },
-  handleSubmit:function(e){
-    this.setState({cat_id: e.target.value}); 
-    e.preventDefault();
-    var cat_id = e.target.value;
+    handleShowComment: function(e){
+        this.setState({ pro_id:e.target.name, disabled: true});
+        var pro_id = e.target.name;
+        if(!pro_id){
+          var pro_id = this.props.id;
+        }
+        this.handleComment({pro_id:pro_id});
+        this.setState({pro_id:'0'});
+        console.log(pro_id);
+    },
+    handleComment:function(e){
     
-    
-    this.props.onhanldeChange({cat_id: cat_id});
-    this.setState({cat_id: e.target.value});
-    
-  },
-  render: function(){
-    var Cat = this.props.cat.map(function(c){
-      return(
-      <option key={c.id_c} value={c.id_c}>{c.c_name}</option>);
+    var pro_id = e.pro_id;
+    var limit = 3;
+    var offset=0;
+
+    axios({
+        url: this.props.url.ajaxcomment, 
+        method:'post',
+        data: {pro_id:pro_id,limit:limit,offset:offset},
+        transformRequest: [function (data) {
+        var obj = jQuery.param(data);
+        return obj;
+      }],
     })
-    return(
-      <div className="filter-category col-xs-6" >
-          <select className="form-control" onChange={this.handleSubmit} value={this.state.value} >
-              <option value="">All</option>
-              {Cat}
-         </select>
-          
-           
-     </div>
-  );
-  }
-});
-
-//Filier
-var Filter = React.createClass({
-  getInitialState: function(){
-    return {
-      f_id: '1'
-    }
-  },
-  handleFilter: function(e){
-    this.setState({f_id: e.target.value});
-    e.preventDefault();
-    var f_id=e.target.value;
-
-    this.props.onhandleFilterChange({f_id: f_id});
-    this.setState({f_id: e.target.value});
-  },
-  render: function(){
-    return (
-      <div className="filter-category col-xs-6">
-        <select className="form-control" onChange={this.handleFilter} value={this.state.f_id}>
-          <option value="1">Price high to low</option>
-          <option value="2">Price low to high</option>
-          <option value="3">Most Comment</option>
-          <option value="4">Most Like</option>
-        </select>
-      </div>
-    );
-  }
-});
-
-//List product
-var Ls = React.createClass({
-  getInitialState: function(){
-    return {
-      pro_id: '0', disabled: false,comment:''
-    }
-  },
-  handleSubmitCommet: function(e){
-    console.log('you are here in Ls');
-    this.setState({comment:e.comment});
-    var comment = e.comment;
-    var pro_id = e.pro_id;
-    this.props.onhandleSubmitComment({comment:comment,pro_id:pro_id});
-    console.log(e);
-  },
-
-  handleShowComment: function(e){
-    this.setState({ pro_id:e.target.name, disabled: true});
-    var pro_id = e.target.name;
-    if(!pro_id){
-      var pro_id = this.props.id;
-    }
-    this.props.onhandleComment({pro_id:pro_id});
-    this.setState({pro_id:'0'})
-    console.log(pro_id);
-  },
-
-  handleLoadmorecomment:function(e){
-    var pro_id = e.pro_id;
-    this.props.handleLoadmorecomment({pro_id:pro_id});
-  },
-  render: function(){
-    var disabled = this.state.disabled ? 'disabled' : ''
-    return(
-      <div className="ls col-xs-12" id="ls">
-          <div className="image col-xs-12">
-          <a href={'http://localhost/pyrocms/products/detail/'+ this.props.id}>
-             <img src={this.props.p_image} />
-          </a>
-          </div>
-
-          <div className="detail col-xs-6 col-md-6 ">
-              <p className="properties-label"> <a href={'http://localhost/pyrocms/products/detail/'+ this.props.id}> {this.props.p_name} </a> </p>   
-          </div>
-          <div className="detail col-xs-6 col-md-6">
-              <div className="pull-right">
-              <p className="properties-label"> Price :</p>
-          <span className="price properties-content"> {this.props.p_price} </span>   
-          </div>
-          </div>
-          <div className="detail col-xs-12 col-md-12"> 
-              <span className="properties-label-des"> Short description:</span>
-              <p>{this.props.p_short_description}</p>
-              <a href="#"> Read more </a>
-          </div>
+    .then(function (response){
         
-          <div className="btn-group btn-group-justified ">
-              <a href="#" className="btn btn-default"><span className="glyphicon glyphicon-heart"></span><span>306</span></a>
-              <a name={this.props.id} 
-              className="btn btn-default" 
-              role="button"
-              data-parent="#accordion" 
-              data-toggle="collapse" 
-              href={"#collapse"+this.props.id} 
-              aria-expanded="false" 
-              aria-controls={"collapse"+this.props.id}  
-              onClick={this.handleShowComment} 
-              disabled={this.state.disabled}>
-                <span className="glyphicon glyphicon-comment"></span></a>
-              <a href="#" className="btn btn-default"><span className="glyphicon glyphicon-share-alt"></span></a>
-          </div>  
+        var a = this.props.comment.datacomment;
+        var b = a.concat(response.data);
+        this.props.setComments(b,offset,pro_id);
+        console.log(this.props.comment.datacomment);
+    }.bind(this))
+    .catch(function (error){
+        console.log(error);
+    }.bind(this),)
 
-        <CommentBox datacomment={this.props.comment} id_product={this.props.id} handleSubmitComment={this.handleSubmitCommet} handleLoadmorecomment={this.handleLoadmorecomment}/> 
-      
-     
-      </div>
-    );
-  }
-}); 
+    },
+    render: function(){
+        return(
+            <div className="product">
+            
+                <div className="row" key={this.props.id}>
+                    <div className="ls col-xs-12" >
+
+                        <div className="image col-xs-12">
+                            <a href={window.location+'/detail/'+ this.props.id}>
+                               <img src={this.props.p_image} />
+                            </a>
+                        </div>
+
+                        <div className="detail col-xs-6 col-md-6 ">
+                            <p className="properties-label"> <a href={window.location+'/detail/'+ this.props.id}> {this.props.p_name} </a> </p>   
+                        </div>
+                        <div className="detail col-xs-6 col-md-6">
+                            <div className="pull-right">
+                                <p className="properties-label"> Price :</p>
+                                <span className="price properties-content"> {this.props.p_price} </span>   
+                            </div>
+                        </div>
+                        <div className="detail col-xs-12 col-md-12"> 
+                            <span className="properties-label-des"> Short description:</span>
+                            <p>{this.props.p_short_description}</p>
+                            <a href="{window.location+'/detail/'+ this.props.id}"> Read more </a>
+                        </div>
+
+                        <div className="btn-group btn-group-justified ">
+                            <a href="#" className="btn btn-default"><span className="glyphicon glyphicon-heart"></span><span>306</span></a>
+                            <a 
+                            name={this.props.id} 
+                            className="btn btn-default" 
+                            role="button"
+                            data-parent="#accordion" 
+                            data-toggle="collapse" 
+                            href={"#collapse"+this.props.id} 
+                            aria-expanded="false" 
+                            aria-controls={"collapse"+this.props.id} 
+                            onClick={this.handleShowComment} 
+                            disabled={this.state.disabled}
+                            >
+                              <span className="glyphicon glyphicon-comment"></span></a>
+                            <a href="#" className="btn btn-default"><span className="glyphicon glyphicon-share-alt"></span></a>
+                        </div>        
+                        <CommentBox id_product={this.props.id}/> 
+ 
+                    </div>
+                </div>
+             
+            </div>
+        );
+    }
+});
 
 var CommentBox = React.createClass({
-  getInitialState: function(){
-    return {
-      comment: '',pro_id: ''
-    }
-  },
-  onhandleSubmitCommet:function(e){
-    this.setState({comment:e.comment,pro_id:this.props.id_product});
-    var comment = e.comment;
-    var pro_id = e.pro_id;
-    this.props.handleSubmitComment({comment:comment,pro_id:pro_id});
-    
-    console.log(e);
-  },
-
-  handleLoadmorecomment:function(){
-    this.props.handleLoadmorecomment({pro_id:this.props.id_product});
-  },
-  render: function(){
-    return(
+    handleLoadmorecomment:function(e){
+     var pro_id = this.props.id_product;
+     
+     var obj = {
+          "productid": this.props.comment.datacomment
+        };
+           function getCount(group) {
+            var count = 0;
+            for (var i = 0; i < obj.productid.length; i++) {
+                if (obj.productid[i].product_id_c == group) {
+                    count++;
+                }
+            }
+            return count;
+        }
+        var x = getCount(pro_id);
+        console.log(getCount(pro_id));
+        var offset = x;
+    axios({
+        url: this.props.url.ajaxcomment, 
+        method:'post',
+        data: {limit:3,pro_id:pro_id,offset:offset},
         
-         <div className="commentbox collapse" id={"collapse"+this.props.id_product}>
+    })
+    .then(function (response){
+        var a = response.data;
+        var b = a.concat(this.props.comment.datacomment);
+        this.props.setComments(b,offset,pro_id=this.props.comment.pro_id);
+        //var x = Object.keys(this.props.comment.datacomment.product_id_c==="1").length;
+        //console.log(x);
+    }.bind(this))
+    .catch(function (error){
+        console.log(error);
+    }.bind(this),) 
+    },
+    render: function(){
+        return(
+           <div className="commentbox collapse" id={"collapse"+this.props.id_product}>
             <button className="loadmore btn btn-default" onClick={this.handleLoadmorecomment}> Load older comment...</button>  
-            {this.props.datacomment.map((a)=>{ if(this.props.id_product == a.product_id_c){ return(
+            {this.props.data.map((a)=>{ if(this.props.id_product == a.product_id_c){ return(
                 <div className="well" key={a.id}>
                   <div>
                   {a.comments}
@@ -412,73 +232,445 @@ var CommentBox = React.createClass({
                   aria-expanded="false" 
                   aria-controls={"collapseone"+a.id} 
                     >reply</a>
-                  <ReplyBox comment_id = {a.id}/>  
+                  
                 </div>)}
             })} 
             
-            
-            <CommentForm onhandleSubmitComment={this.onhandleSubmitCommet} id_product={this.props.id_product}/>  
-          </div>  
-    );
-  }
-});
+             <CommentForm id_product={this.props.id_product}/>  
 
+          </div>       
+        )
+    }
+});
 var CommentForm = React.createClass({
-  getInitialState: function(){
-    return {
-      comment: '',pro_id:''
-    }
-  },
+    getInitialState: function(){
+      return {
+        comment: '',pro_id:''
+      }
+    },
 
-  handleTextChange: function(e){
-    this.setState({comment: e.target.value})
-  },
+    handleTextChange: function(e){
+      this.setState({comment: e.target.value});
+    },
 
-  handleSubmitCommet: function(e){
-    e.preventDefault();
-    var comment = this.state.comment.trim();
-    if(!comment){
-      return;
-    }
-    this.props.onhandleSubmitComment({comment:comment,pro_id:this.props.id_product});
-    this.setState({comment:'',pro_id:''});
-    console.log(this.state);
-  },
+    handleSubmitComment: function(e){
+      e.preventDefault();
+      var comment = this.state.comment.trim();
+      if(!comment){
+        return;
+      }
+      this.onhandleSubmitComment({comment:comment,pro_id:this.props.id_product});
+      this.setState({comment:'',pro_id:''});
+      console.log(this.state);
+    },
+    
+    onhandleSubmitComment:function(e){
+        var comment = e.comment;
+        var pro_id = e.pro_id;
+        var limit = 1;
 
-  render: function(){
-    return(
-     <form className="commentForm" onSubmit={this.handleSubmitCommet}>
-      <div className="commentForm input-group col-xs-12">
-            <input 
-            type="text" className="form-control" 
-            placeholder="Say something in your mind ....." 
-            value={this.state.comment}
-            onChange={this.handleTextChange}
-            required
-            />
-            <span className="input-group-btn">
-                <button className="btn btn-danger" type="submit" value="Comment">
-                    <span className="glyphicon glyphicon-hand-up"></span>
-                </button>
-            </span>
-        </div>
-        </form>
-    );
-  }
-});
+        axios({
+        url: this.props.url.ajaxcomment, 
+        method:'post',
+        data: {limit:limit,comment:comment,asd:1, pro_id:pro_id,offset:0},
+        
+        })
+        .then(function (response){
+            var a = this.props.comment.datacomment;
+            var b = a.concat(response.data);
+            this.props.addComment(b);
+            console.log(response.data);
+        }.bind(this))
+        .catch(function (error){
+            this.props.addComment(comment);
+            console.log(error);
+        }.bind(this),)
+    },
 
-var ReplyBox = React.createClass({
-  render: function(){
-    return(
-      <div className="commentbox collapse" id={"collapseone"+this.props.comment_id}>
-          <div className="well">
-          asdfasdfasdfasdf
+    render: function(){
+      return(
+       <form className="commentForm" onSubmit={this.handleSubmitComment}>
+        <div className="commentForm input-group col-xs-12">
+              <input 
+              type="text" className="form-control" 
+              placeholder="Say something in your mind ....." 
+              value={this.state.comment}
+              onChange={this.handleTextChange}
+              required
+              />
+              <span className="input-group-btn">
+                  <button className="btn btn-danger" type="submit" value="Comment">
+                      <span className="glyphicon glyphicon-hand-up"></span>
+                  </button>
+              </span>
           </div>
-      </div>
-    );
-  }
+          </form>
+      );
+    }
 });
+
+
+var Categories = React.createClass({
+    getInitialState: function() {
+         return {
+             cat_id: ''
+         }
+     },
+  
+    handleSubmit:function(e){
+        this.setState({cat_id: e.target.value}); 
+        e.preventDefault();
+        var cat_id = e.target.value;
+        this.handleCategoryChange({cat_id: cat_id});
+        this.setState({cat_id: e.target.value});
+    },
+
+    handleCategoryChange: function(e){
+        var cat_id = e.cat_id;
+        var offset = 0;
+        var f_id = this.props.query.f_id;
+        axios({
+            url: this.props.url.ajaxlist,
+            method:'post',
+            data: {limit:this.props.query.limit, offset: offset,cat_id:cat_id,f_id:f_id},
+           
+        })
+        .then(function (response){
+            this.props.changeCategories(response.data,cat_id,offset);
+            //console.log(response.data);
+        }.bind(this))
+        .catch(function (error){
+            console.log(error);
+        }.bind(this),)
+
+    },
+
+    render: function(){
+        var Cat = this.props.data.map(function(c){
+            return(
+            <option key={c.id_c} value={c.id_c}>{c.c_name}</option>);
+        })
+        return(
+          <div className="filter-category col-xs-6" >
+              <select className="form-control" onChange={this.handleSubmit} value={this.state.value} >
+                  <option value="">All</option>
+                  {Cat}
+             </select>
+
+
+         </div>
+        )
+    }
+});
+
+var Filters = React.createClass({
+    getInitialState: function(){
+        return {
+            f_id: '1'
+        }
+    },
+    handleFilter: function(e){
+        this.setState({f_id: e.target.value});
+        e.preventDefault();
+        var f_id=e.target.value;
+
+        this.handleFilterChange({f_id: f_id});
+        this.setState({f_id: e.target.value});
+    },
+    handleFilterChange: function(e){
+        var f_id = e.f_id;
+        var limit = 3;
+        var offset=0;
+        axios({
+            url: this.props.url.ajaxlist,
+            method:'post',
+            data: {limit:limit, offset: offset,cat_id:this.props.query.cat_id,f_id:f_id},
+            
+        })
+        .then(function (response){
+            this.props.changeFilter(response.data,f_id,offset);
+            //console.log(response.data);
+        }.bind(this))
+        .catch(function (error){
+            console.log(error);
+        }.bind(this),)       
+    },
+
+    render: function(){
+        return(
+            <div className="filter-category col-xs-6">
+                <select className="form-control" onChange={this.handleFilter} value={this.state.f_id}>
+                    <option value="1">Price high to low</option>
+                    <option value="2">Price low to high</option>
+                    <option value="3">Most Comment</option>
+                    <option value="4">Most Like</option>
+                </select>
+            </div>                
+        );
+    } 
+});
+
+var createStore = Redux.createStore;
+var Provider = ReactRedux.Provider;
+var connect = ReactRedux.connect;
+var applyMiddleware = Redux.applyMiddleware;
+
+
+var initialState = {
+    url:{
+        ajaxlist: window.location+"/apis/ajaxlist",
+        ajaxcategories: window.location+"/apis/ajaxcategories",
+        ajaxcomment: window.location+'/apis/ajaxcomment'
+     },
+    products: [],
+    query:{
+        limit:3,
+        offset:0,
+        cat_id:'',
+        f_id:'1'
+    },
+    categories: [],
+    comment:{
+        datacomment:[],
+        C_limit:3,
+        C_offset:0,
+        pro_id:''
+    },
+    reply:{
+        datareply:[],
+        re_limit:3,
+        re_offset:0,
+        com_id:''
+    }
+};
+
+var reducer = function(state,action){
+    if(state === undefined) {
+        return initialState;
+    }
+    var newState = state;
+        switch(action.type){
+        
+        case 'set_Products':
+            newState = Object.assign({}, state,{products: action.data});
+        break;
+
+        case 'set_Categories':
+            newState = Object.assign({}, state,{categories: action.data});
+        break;
+
+        case 'loadmore_Products':
+            newState = Object.assign({}, state,{
+                products: action.data,
+                query:{
+                    limit:state.query.limit,
+                    offset:action.offset,
+                    cat_id:state.query.cat_id,
+                    f_id:state.query.f_id
+                }
+            });
+        break;
+
+        case 'change_Categories':
+            newState = Object.assign({},state,  {
+                products: action.data,
+                query:{
+                    limit:state.query.limit,
+                    offset:action.offset,
+                    cat_id:action.cat_id,
+                    f_id: state.query.f_id
+                }
+            });
+        break;
+
+        case 'change_Filter':
+            newState = Object.assign({},state,{
+                products: action.data,
+                query:{
+                    limit:state.query.limit,
+                    offset:action.offset,
+                    cat_id:state.query.cat_id,
+                    f_id: action.f_id
+                }
+            });
+        break; 
+            
+        case 'set_Comments':
+            newState = Object.assign({},state,{
+                comment:{
+                    datacomment: action.data,
+                    C_limit: state.comment.C_limit,
+                    C_offset: action.offset,
+                    pro_id: action.pro_id
+                }
+            });
+            break;
+        case 'add_Comment':
+            newState = Object.assign({},state,{
+            comment:{
+                datacomment: action.data
+            }
+        });break;
+            
+    }
+  
+    return newState;
+};
+
+var store = createStore(reducer, initialState);
+console.log(store.getState());
+
+
+var ProductListDispatch = function(dispatch){
+    return{
+        setProducts: function(products){
+            dispatch({
+              type: 'set_Products',
+              data: products
+            });
+        },
+        setCategories: function(categories){
+            dispatch({
+              type: 'set_Categories',
+              data: categories
+            });
+        },
+        loadmoreProducts: function(products,offset){
+            dispatch({
+                type:'loadmore_Products',
+                data: products,
+                offset: offset
+            })
+        }
+    }
+};
+
+
+var ProductListState = function(state){
+    return {
+        url: state.url,
+        query: state.query,
+        data: state.products
+    };
+};
+
+
+ProductList = connect(
+    ProductListState,
+    ProductListDispatch
+)(ProductList)
+
+//send data to Product component
+var ProductsState = function(state){
+    return {
+        url: state.url,
+        comment: state.comment
+    }
+};
+var CommentDispatch = function(dispatch){
+    return{
+        setComments: function(data,offset,pro_id){
+            dispatch({
+                type: "set_Comments",
+                data: data,
+                offset:offset,
+                pro_id:pro_id
+            })
+        }
+    }
+};
+
+Products = connect(ProductsState,CommentDispatch)(Products)
+
+var CommentBoxState = function(state){
+    return{
+        data: state.comment.datacomment,
+        comment: state.comment,
+        url: state.url
+    }
+}
+CommentBox = connect(
+        CommentBoxState,CommentDispatch
+        )(CommentBox)
+
+
+var CommentFormState = function(state){
+    return{
+        comment:state.comment,
+        url:state.url   
+    }
+};
+
+var CommentFormDispatch = function(dispatch){
+    return{
+        addComment: function(data){
+            dispatch({
+                type: 'add_Comment',
+                data:data
+            })
+        }
+    }
+};
+CommentForm=connect(CommentFormState,CommentFormDispatch)(CommentForm)
+//send data to categories component
+var CategoriesState = function(state){
+    return {
+        query: state.query,
+        data: state.categories,
+        url: state.url
+    }
+};
+
+var CategoriesDispatch = function(dispatch){
+    return{
+        changeCategories: function(data,cat_id,offset){
+            dispatch({
+                type: 'change_Categories',
+                data: data,
+                cat_id: cat_id,
+                offset: offset
+            })
+            console.log('change_Categories');
+            console.log(store.getState());
+        }
+    }
+};
+
+Categories = connect(
+    CategoriesState,
+    CategoriesDispatch
+)(Categories)
+
+var FilterState = function(state){
+    return{
+        url: state.url,
+        query: state.query
+    }
+};
+var FilterDispatch = function(dispatch){
+    return{
+        changeFilter: function(data,f_id,offset){
+            dispatch({
+                type: 'change_Filter',
+                data: data,
+                f_id: f_id,
+                offset: offset
+            })
+            console.log('change_Filter');
+            console.log(store.getState());
+        }
+    }
+};
+
+Filters = connect(
+    FilterState,
+    FilterDispatch
+)(Filters)
+
+
 ReactDOM.render(
-<Blog url={window.location+"/ajaxlist"}/>,
-document.getElementById('product')
-); 
+    <Provider store={store}>
+        <ProductList />
+    </Provider>,
+    document.getElementById('product')
+);
