@@ -30,10 +30,11 @@ var ProductList = React.createClass({
         })
         .then(function (response){
             this.props.setCategories(response.data);
-            //console.log(response);
+            
         }.bind(this))
         .catch(function (error){
             console.log(error);
+           
         }.bind(this),)
     },
     
@@ -54,6 +55,12 @@ var ProductList = React.createClass({
         }.bind(this))
         .catch(function (error){
             console.log(error);
+            if (error.response.status=404) {
+                alert( "This is all Products for this Category. Choose your favorite and share with your friends about us." );
+                document.getElementById('loadmorepro').style.visibility = 'hidden';
+                
+
+            } 
         }.bind(this),)
         
     },
@@ -74,7 +81,7 @@ var ProductList = React.createClass({
           })}
             
             <div className="row text-center">
-                <button className="loadmore btn btn-default" onClick={this.handleProductloadmore}> Load more...</button>
+                <button id="loadmorepro" className="loadmore btn btn-default" onClick={this.handleProductloadmore}> Load more...</button>
             </div>
         </div>
       );
@@ -142,8 +149,8 @@ var Products = React.createClass({
                         </div>
                         <div className="detail col-xs-6 col-md-6">
                             <div className="pull-right">
-                                <p className="properties-label"> Price :</p>
-                                <span className="price properties-content"> {this.props.p_price} </span>   
+                                <p className="properties-label col-xs-6"> Price :</p>
+                                <span className="price properties-content col-xs-6"> {this.props.p_price} </span>   
                             </div>
                         </div>
                         <div className="detail col-xs-12 col-md-12"> 
@@ -189,7 +196,7 @@ var CommentBox = React.createClass({
            function getCount(group) {
             var count = 0;
             for (var i = 0; i < obj.productid.length; i++) {
-                if (obj.productid[i].product_id_c == group) {
+                if (obj.productid[i].product_id_c === group) {
                     count++;
                 }
             }
@@ -213,12 +220,18 @@ var CommentBox = React.createClass({
     }.bind(this))
     .catch(function (error){
         console.log(error);
+            if (error.response.status=404) {
+                alert( "This is all comment for this product. Tell us how do you feel about this." );
+                document.getElementById('loadmorecom').style.visibility = 'hidden';
+                
+
+            }
     }.bind(this),) 
     },
     render: function(){
         return(
            <div className="commentbox collapse" id={"collapse"+this.props.id_product}>
-            <button className="loadmore btn btn-default" onClick={this.handleLoadmorecomment}> Load older comment...</button>  
+            <button id="loadmorecom" className="loadmore btn btn-default" onClick={this.handleLoadmorecomment}> Load older comment...</button>  
             {this.props.data.map((a)=>{ if(this.props.id_product == a.product_id_c){ return(
                 <div className="well" key={a.id}>
                   <div>
@@ -231,8 +244,8 @@ var CommentBox = React.createClass({
                   href={"#collapseone"+a.id}
                   aria-expanded="false" 
                   aria-controls={"collapseone"+a.id} 
-                    >reply</a>
-                  
+                  >reply</a>
+                  <ReplyBox comment_id = {a.id}/>  
                 </div>)}
             })} 
             
@@ -242,6 +255,19 @@ var CommentBox = React.createClass({
         )
     }
 });
+
+var ReplyBox = React.createClass({
+  render: function(){
+    return(
+      <div className="commentbox collapse" id={"collapseone"+this.props.comment_id}>
+          <div className="well">
+          asdfasdfasdfasdf
+          </div>
+      </div>
+    );
+  }
+});
+
 var CommentForm = React.createClass({
     getInitialState: function(){
       return {
@@ -341,6 +367,10 @@ var Categories = React.createClass({
         }.bind(this))
         .catch(function (error){
             console.log(error);
+            if (error.response.status=404) {
+              alert( "This Category will soon be available. Thanks for coming to our restaurant" );
+              window.location= window.location;
+            } 
         }.bind(this),)
 
     },
