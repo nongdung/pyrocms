@@ -78,7 +78,7 @@ var ProductList = React.createClass({
             {this.props.data.map((a)=>{
             return <Products  
              p_name={a.p_name} id={a.id} key={a.id} p_price={a.p_price} p_short_description={a.p_short_description} p_image={a.path}/>
-          })}
+            })}
             
             <div className="row text-center">
                 <button id="loadmorepro" className="loadmore btn btn-default" onClick={this.handleProductloadmore}> Load more...</button>
@@ -120,7 +120,6 @@ var Products = React.createClass({
       }],
     })
     .then(function (response){
-        
         var a = this.props.comment.datacomment;
         var b = a.concat(response.data);
         this.props.setComments(b,offset,pro_id);
@@ -187,6 +186,48 @@ var Products = React.createClass({
 });
 
 var CommentBox = React.createClass({
+    getInitialState: function(){
+        return {
+          pro_id: '0',com_id:'0', disabled: false,comment:''
+        }
+    },
+    handleShowReply: function(e){console.log(e);
+        var anchor = document.getElementById(e.target.id);
+        anchor.style.display="none";
+        var com_id = e.target.name;
+        var pro_id = this.props.id_product;
+        this.setState({ pro_id:pro_id,com_id:com_id, disabled: true});
+        if(!com_id || !pro_id){
+          return;
+        }
+        this.handleReply({pro_id:pro_id,com_id:com_id});
+        this.setState({pro_id:'0',com_id:'0'});
+        console.log(com_id);
+    },
+    
+    handleReply: function(e){
+        var com_id = e.com_id;
+        var limit = 3;
+        var offset=0;
+        var pro_id = e.pro_id;
+        axios({
+            url: this.props.url.ajaxreply, 
+            method:'post',
+            data: {pro_id:pro_id,com_id:com_id,limit:limit,offset:offset},
+           
+        })
+        .then(function (response){ 
+            var a = this.props.reply;
+            var b = a.concat(response.data);
+            
+            this.props.setReply(b,limit,offset,com_id);
+            
+        
+        }.bind(this))
+        .catch(function (error){
+            console.log(error);
+        }.bind(this),)
+    },
     handleLoadmorecomment:function(e){
      var pro_id = this.props.id_product;
      
@@ -228,24 +269,37 @@ var CommentBox = React.createClass({
             }
     }.bind(this),) 
     },
+    
     render: function(){
         return(
            <div className="commentbox collapse" id={"collapse"+this.props.id_product}>
             <button id="loadmorecom" className="loadmore btn btn-default" onClick={this.handleLoadmorecomment}> Load older comment...</button>  
             {this.props.data.map((a)=>{ if(this.props.id_product == a.product_id_c){ return(
-                <div className="well" key={a.id}>
-                  <div>
-                  {a.comments}
-                  </div>
-                  <a
-                  role="button" 
-                  data-parent="#accordion" 
-                  data-toggle="collapse" 
-                  href={"#collapseone"+a.id}
-                  aria-expanded="false" 
-                  aria-controls={"collapseone"+a.id} 
-                  >reply</a>
-                  <ReplyBox comment_id = {a.id}/>  
+                <div className="well col-xs-12" key={a.id}>
+                    <div className="asdfghjkl">MinhNguyen:</div>
+                    <div className="col-xs-12">
+
+                    {a.comments}
+                    </div>
+                    <div className="col-xs-6">
+                     
+                          <a
+                          id={a.id}
+                          name ={a.id}
+                          role="button" 
+                          data-parent="#accordion" 
+                          data-toggle="collapse" 
+                          href={"#collapseone"+a.id}
+                          aria-expanded="false" 
+                          aria-controls={"collapseone"+a.id} 
+                          onClick={this.handleShowReply}
+                          
+                          >reply</a>
+                      
+                    </div>
+                    <div className="col-xs-12">
+                        <ReplyBox id_product={this.props.id_product} comment_id = {a.id}/>  
+                    </div>
                 </div>)}
             })} 
             
@@ -257,17 +311,88 @@ var CommentBox = React.createClass({
 });
 
 var ReplyBox = React.createClass({
-  render: function(){
-    return(
-      <div className="commentbox collapse" id={"collapseone"+this.props.comment_id}>
-          <div className="well">
-          asdfasdfasdfasdf
-          </div>
-      </div>
-    );
-  }
-});
+    render: function(){
+      return(
+        <div className="commentbox collapse" id={"collapseone"+this.props.comment_id}>
+           {this.props.reply.map((a)=>{ if(this.props.comment_id == a.reply_id){ return(
+            <div className="well col-xs-12" key={a.id}>
+                <div className="asdfghjkl">MinhNguyen:</div>
+                    <div className="col-xs-6">
+                    {a.comments}
+                    </div>
+            </div>
+            )}
+              })}
+            <ReplyForm id_product={this.props.id_product} comment_id = {this.props.comment_id}/>
 
+        </div>
+      );
+    }
+});
+var ReplyForm = React.createClass({
+    getInitialState: function(){
+      return {
+        comment: '',pro_id:'',com_id:''
+      }
+    },
+    
+    handleTextChange: function(e){
+      this.setState({comment: e.target.value});
+    },
+    
+    handleSubmitReply: function(e){
+      e.preventDefault();
+      var comment = this.state.comment.trim();
+      if(!comment){
+        return;
+      }
+      this.onhandleSubmitReply({comment:comment,pro_id:this.props.id_product,com_id:this.props.comment_id});
+      
+      this.setState({comment:'',pro_id:'',com_id:''});
+      
+    },
+    
+    onhandleSubmitReply:function(e){
+        var comment = e.comment;
+        var pro_id = e.pro_id;
+        var limit = 1;
+        var com_id = e.com_id;
+        axios({
+        url: this.props.url.ajaxreply, 
+        method:'post',
+        data: {limit:limit,comment:comment,asd:1, pro_id:pro_id,offset:0,com_id:com_id},
+        
+        })
+        .then(function (response){
+            var a = this.props.reply;
+            var b = a.concat(response.data);
+            this.props.addReply(b);
+            console.log(response.data);
+        }.bind(this))
+        .catch(function (error){
+            this.props.addReply(comment);
+            console.log(error);
+        }.bind(this),)
+    },
+    
+
+    render: function(){
+      return(
+       <form className="commentForm" onSubmit={this.handleSubmitReply}>
+            <div className="commentForm input-group col-xs-12">
+                <input 
+                type="text" className="form-control" 
+                placeholder="Write reply ....." 
+                value={this.state.comment}
+                onChange={this.handleTextChange}
+                required
+                />
+
+            </div>
+        </form>
+      );
+    }
+});
 var CommentForm = React.createClass({
     getInitialState: function(){
       return {
@@ -450,7 +575,8 @@ var initialState = {
     url:{
         ajaxlist: window.location+"/apis/ajaxlist",
         ajaxcategories: window.location+"/apis/ajaxcategories",
-        ajaxcomment: window.location+'/apis/ajaxcomment'
+        ajaxcomment: window.location+'/apis/ajaxcomment',
+        ajaxreply: window.location+'/apis/ajaxreply'
      },
     products: [],
     query:{
@@ -541,7 +667,23 @@ var reducer = function(state,action){
                 datacomment: action.data
             }
         });break;
+         
+        case 'set_Reply':
+            newState = Object.assign({},state,{
+                reply:{
+                    datareply: action.data,
+                    re_limit: action.limit,
+                    re_offset: action.offset,
+                    com_id:action.com_id
+                }
+            });break;
             
+        case 'add_Reply':
+            newState = Object.assign({},state,{
+                reply:{
+                    datareply: action.data
+                }
+            }); break;   
     }
   
     return newState;
@@ -606,6 +748,17 @@ var CommentDispatch = function(dispatch){
                 offset:offset,
                 pro_id:pro_id
             })
+            console.log(store.getState());
+        },
+        setReply: function(data,limit,offset,com_id){
+            dispatch({
+                type: 'set_Reply',
+                data:data,
+                limit:limit,
+                offset:offset,
+                com_id:com_id
+            })
+            console.log(store.getState());
         }
     }
 };
@@ -616,7 +769,9 @@ var CommentBoxState = function(state){
     return{
         data: state.comment.datacomment,
         comment: state.comment,
-        url: state.url
+        url: state.url,
+        reply: state.reply.datareply,
+
     }
 }
 CommentBox = connect(
@@ -638,10 +793,41 @@ var CommentFormDispatch = function(dispatch){
                 type: 'add_Comment',
                 data:data
             })
-        }
+        },
+        
     }
 };
 CommentForm=connect(CommentFormState,CommentFormDispatch)(CommentForm)
+
+var ReplyBoxState = function(state){
+    return{
+        reply: state.reply.datareply,
+        url: state.url
+    }
+}
+
+
+ReplyBox = connect(ReplyBoxState)(ReplyBox)
+
+var ReplyFormState = function(state){
+    return{
+        url: state.url,
+        reply:state.reply.datareply
+    }
+}
+
+var ReplyFormDispatch = function(dispatch){
+    return{
+        addReply: function(data){
+            dispatch({
+                type:'add_Reply',
+                data:data
+            })
+        }
+    }
+}
+
+ReplyForm = connect(ReplyFormState,ReplyFormDispatch)(ReplyForm)
 //send data to categories component
 var CategoriesState = function(state){
     return {
@@ -696,6 +882,7 @@ Filters = connect(
     FilterState,
     FilterDispatch
 )(Filters)
+
 
 
 ReactDOM.render(

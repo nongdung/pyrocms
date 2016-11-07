@@ -43,11 +43,33 @@ class Homepage_m extends MY_Model
 
     public function ajaxcomments($limit=2,$offset=0,$pro_id=null)
     {
-            $q =" SELECT * FROM (SELECT comments,product_id_c,default_products_comment.id
+            $q =" SELECT * FROM (SELECT comments,product_id_c,reply_id,default_products_comment.id
                     FROM default_products_comment 
                     INNER JOIN default_products_products 
                     ON default_products_comment.product_id_c = default_products_products.id
                     WHERE default_products_products.id = $pro_id 
+                    AND reply_id IS NULL    
+                    ORDER BY default_products_comment.created DESC
+                    LIMIT $limit 
+                    OFFSET $offset
+                    ) AS `table` ORDER by id ASC";
+        
+        
+       
+        $query = $this->db->query($q);
+        return $query->result_array();
+
+        
+    }
+    
+    public function ajaxreply($pro_id=null,$com_id=null,$limit=2,$offset=0)
+    {
+            $q =" SELECT * FROM (SELECT comments,product_id_c,reply_id,default_products_comment.id
+                    FROM default_products_comment 
+                    INNER JOIN default_products_products 
+                    ON default_products_comment.product_id_c = default_products_products.id
+                    WHERE default_products_products.id = $pro_id 
+                    AND reply_id = $com_id    
                     ORDER BY default_products_comment.created DESC
                     LIMIT $limit 
                     OFFSET $offset
@@ -65,16 +87,5 @@ class Homepage_m extends MY_Model
         $this->db->insert("products_comment",$data);
         return true;
     }
-    /*public function comments($limit=2,$offset=0,$pro_id=null)
-    {
-        $this->db->select("comments,product_id_c,products_comment.id");
-        $this->db->from("products_comment");
-        $this->db->where("products_products.id",$pro_id);
-        $this->db->order_by('created','DESC');
-        $this->db->join('products_products', 'products_products.id = products_comment.product_id_c');
-        $this->db->limit($limit,$offset);
-       
-        $query = $this->db->get()
-        return $query->result_array();
-    }*/
+    
 }
