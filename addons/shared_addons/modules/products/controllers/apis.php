@@ -27,7 +27,7 @@ class Apis extends REST_Controller{
     }
     function ajaxcomment_post(){
         //$this->response("asdfads");
-         if($this->post('asd'))
+        if($this->post('asd'))
         {
             $data = array (
                 'comments'     => $this->post('comment'),
@@ -44,5 +44,25 @@ class Apis extends REST_Controller{
         $data = $this->homepage_m->ajaxcomments($limit, $offset, $pro_id);
         $this->response($data);
         
+    }
+    
+    function ajaxreply_post(){
+        if($this->post('asd'))
+        {
+            $data = array (
+                'comments'     => $this->post('comment'),
+                'product_id_c' => $this->post('pro_id'),
+                'user_id_c'    => '1',
+                'created'      => date('Y-m-d H:i:s'),
+                'reply_id'     => $this->post('com_id')
+            ); 
+            $this->products_m->insert_comments($data);
+        }
+        $pro_id = $this->post('pro_id');
+        $com_id = $this->post('com_id');
+        $limit = $this->post('limit');
+        $offset = $this->post('offset');
+        $data = $this->homepage_m->ajaxreply($pro_id,$com_id,$limit,$offset);
+        $this->response($data);
     }
 }
