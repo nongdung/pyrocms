@@ -2,6 +2,35 @@ var ProductList = React.createClass({
     componentDidMount: function() {
         this.loadProductFromServer();
         this.loadCategoryFromServer();
+        this.loadUserId();
+       
+    },
+    
+    loadUserId:function(){
+        axios({
+            url:this.props.url.ajaxuserdata
+        })
+        .then(function (response) {
+            this.props.setUserId(response.data);
+            this.loadLikedata();
+        }.bind(this))
+        .catch(function (error) {
+            console.log(error);
+        }.bind(this),);
+    },
+    loadLikedata:function(){
+        axios({
+            url:this.props.url.ajaxlike,
+            method:'post',
+            data:{user_id:this.props.user_id}
+        })
+        .then(function (response) {
+            this.props.setLike(response.data);
+            
+        }.bind(this))
+        .catch(function (error) {
+            console.log(error);
+        }.bind(this),);
     },
     
     loadProductFromServer: function() {    
@@ -161,7 +190,10 @@ var Products = React.createClass({
                         </div>
 
                         <div className="btn-group btn-group-justified ">
-                            <a href="#" className="btn btn-default"><span className="glyphicon glyphicon-heart"></span><span>306</span></a>
+                        {this.props.like.map((a)=>{ if(this.props.id == a.pro_id){ return(
+                            <LikeButton key={a.pro_id} pro_id={a.pro_id} likecount={a.likecount} usercount={a.usercount} />
+                                )}
+                        })}  
                             <a 
                             name={this.props.id} 
                             className="btn btn-default" 
@@ -184,6 +216,46 @@ var Products = React.createClass({
              
             </div>
         );
+    }
+});
+
+var LikeButton = React.createClass({
+    getInitialState: function(){
+        return {
+            usercount:parseInt(this.props.usercount),likecount:parseInt(this.props.likecount)
+        }
+    }, 
+    Likeclick: function(){
+        if(this.state.usercount === 0){
+        var usercount = this.state.usercount+1;
+        var likecount = this.state.likecount+1;
+        }
+        if(this.state.usercount === 1){
+        var usercount = this.state.usercount-1;
+        var likecount = this.state.likecount-1;
+        }
+        this.setState({usercount:usercount,likecount:likecount});
+        this.handleLikeclick({usercount:parseInt(this.props.usercount)+1,likecount:parseInt(this.props.likecount)+1});
+    },
+    
+    handleLikeclick:function(){
+        console.log(this.state);
+    },
+    
+    render: function(){
+        if(this.state.usercount === 0){
+            var style = {color: "black"};
+        }
+        if(this.state.usercount === 1){
+        var style = {color: "red"};
+        }
+        console.log(this.state);
+        return(
+            <a className="btn btn-default" onClick={this.Likeclick}>
+                <span id={this.props.pro_id} className="glyphicon glyphicon-heart" style={style}></span>
+                <span>{this.state.likecount}</span>
+            </a>
+        )
     }
 });
 
@@ -622,7 +694,9 @@ var initialState = {
         ajaxlist: window.location+"/apis/ajaxlist",
         ajaxcategories: window.location+"/apis/ajaxcategories",
         ajaxcomment: window.location+'/apis/ajaxcomment',
-        ajaxreply: window.location+'/apis/ajaxreply'
+        ajaxreply: window.location+'/apis/ajaxreply',
+        ajaxuserdata: window.location+'/apis/ajaxuserdata',
+        ajaxlike: window.location+'/apis/ajaxlike'
      },
     products: [],
     query:{
@@ -643,7 +717,10 @@ var initialState = {
         re_limit:3,
         re_offset:0,
         com_id:''
-    }
+    },
+    user_id:'',
+    like:[]
+    
 };
 
 var reducer = function(state,action){
@@ -652,84 +729,95 @@ var reducer = function(state,action){
     }
     var newState = state;
         switch(action.type){
-        
-        case 'set_Products':
-            newState = Object.assign({}, state,{products: action.data});
-        break;
-
-        case 'set_Categories':
-            newState = Object.assign({}, state,{categories: action.data});
-        break;
-
-        case 'loadmore_Products':
-            newState = Object.assign({}, state,{
-                products: action.data,
-                query:{
-                    limit:state.query.limit,
-                    offset:action.offset,
-                    cat_id:state.query.cat_id,
-                    f_id:state.query.f_id
-                }
-            });
-        break;
-
-        case 'change_Categories':
-            newState = Object.assign({},state,  {
-                products: action.data,
-                query:{
-                    limit:state.query.limit,
-                    offset:action.offset,
-                    cat_id:action.cat_id,
-                    f_id: state.query.f_id
-                }
-            });
-        break;
-
-        case 'change_Filter':
+            case 'set_UserId':
             newState = Object.assign({},state,{
-                products: action.data,
-                query:{
-                    limit:state.query.limit,
-                    offset:action.offset,
-                    cat_id:state.query.cat_id,
-                    f_id: action.f_id
-                }
-            });
-        break; 
-            
-        case 'set_Comments':
-            newState = Object.assign({},state,{
-                comment:{
-                    datacomment: action.data,
-                    C_limit: state.comment.C_limit,
-                    C_offset: action.offset,
-                    pro_id: action.pro_id
-                }
+                user_id: action.data
             });
             break;
-        case 'add_Comment':
+            
+            case 'set_Like':
             newState = Object.assign({},state,{
-            comment:{
-                datacomment: action.data
-            }
-        });break;
-         
-        case 'set_Reply':
-            newState = Object.assign({},state,{
-                reply:{
-                    datareply: action.data,
-                    re_limit: action.limit,
-                    re_offset: action.offset,
-                    com_id:action.com_id
+                like: action.data
+            });
+            break;
+            
+            case 'set_Products':
+                newState = Object.assign({}, state,{products: action.data});
+            break;
+
+            case 'set_Categories':
+                newState = Object.assign({}, state,{categories: action.data});
+            break;
+
+            case 'loadmore_Products':
+                newState = Object.assign({}, state,{
+                    products: action.data,
+                    query:{
+                        limit:state.query.limit,
+                        offset:action.offset,
+                        cat_id:state.query.cat_id,
+                        f_id:state.query.f_id
+                    }
+                });
+            break;
+
+            case 'change_Categories':
+                newState = Object.assign({},state,  {
+                    products: action.data,
+                    query:{
+                        limit:state.query.limit,
+                        offset:action.offset,
+                        cat_id:action.cat_id,
+                        f_id: state.query.f_id
+                    }
+                });
+            break;
+
+            case 'change_Filter':
+                newState = Object.assign({},state,{
+                    products: action.data,
+                    query:{
+                        limit:state.query.limit,
+                        offset:action.offset,
+                        cat_id:state.query.cat_id,
+                        f_id: action.f_id
+                    }
+                });
+            break; 
+
+            case 'set_Comments':
+                newState = Object.assign({},state,{
+                    comment:{
+                        datacomment: action.data,
+                        C_limit: state.comment.C_limit,
+                        C_offset: action.offset,
+                        pro_id: action.pro_id
+                    }
+                });
+                break;
+            case 'add_Comment':
+                newState = Object.assign({},state,{
+                comment:{
+                    datacomment: action.data
                 }
             });break;
-            
-        case 'add_Reply':
-            newState = Object.assign({},state,{
-                reply:{
-                    datareply: action.data
-                }
-            }); break;
+
+            case 'set_Reply':
+                newState = Object.assign({},state,{
+                    reply:{
+                        datareply: action.data,
+                        re_limit: action.limit,
+                        re_offset: action.offset,
+                        com_id:action.com_id
+                    }
+                });break;
+
+            case 'add_Reply':
+                newState = Object.assign({},state,{
+                    reply:{
+                        datareply: action.data
+                    }
+                }); break;
     }
   
     return newState;
@@ -759,6 +847,19 @@ var ProductListDispatch = function(dispatch){
                 data: products,
                 offset: offset
             })
+        },
+        setUserId: function(user_id){
+            dispatch({
+                type: 'set_UserId',
+                data: user_id   
+            })
+            console.log(store.getState());
+        },
+        setLike: function(data){
+            dispatch({
+                type:'set_Like',
+                data: data
+            })
         }
     }
 };
@@ -768,7 +869,9 @@ var ProductListState = function(state){
     return {
         url: state.url,
         query: state.query,
-        data: state.products
+        data: state.products,
+        user_id: state.user_id,
+        
     };
 };
 
@@ -778,11 +881,18 @@ ProductList = connect(
     ProductListDispatch
 )(ProductList)
 
+var LikeButtonState = function(state){
+    return{
+        data: state.like
+    }
+};
+LikeButton = connect(LikeButtonState)(LikeButton)
 //send data to Product component
 var ProductsState = function(state){
     return {
         url: state.url,
-        comment: state.comment
+        comment: state.comment,
+        like: state.like
     }
 };
 var CommentDispatch = function(dispatch){
