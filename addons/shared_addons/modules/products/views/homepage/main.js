@@ -123,7 +123,9 @@ var Products = React.createClass({
         var a = this.props.comment.datacomment;
         var b = a.concat(response.data);
         this.props.setComments(b,offset,pro_id);
-        console.log(this.props.comment.datacomment);
+        if(response.data.length>2){
+            var loadmore = document.getElementById(this.props.id);
+            loadmore.style.display = '';}
     }.bind(this))
     .catch(function (error){
         console.log(error);
@@ -219,13 +221,15 @@ var CommentBox = React.createClass({
         .then(function (response){ 
             var a = this.props.reply;
             var b = a.concat(response.data);
-            
             this.props.setReply(b,limit,offset,com_id);
-            
-        
+            if(response.data.length>2){
+            var loadmore = document.getElementById("reply"+com_id);
+            loadmore.style.display = '';}
         }.bind(this))
         .catch(function (error){
+            
             console.log(error);
+            
         }.bind(this),)
     },
     handleLoadmorecomment:function(e){
@@ -256,24 +260,22 @@ var CommentBox = React.createClass({
         var a = response.data;
         var b = a.concat(this.props.comment.datacomment);
         this.props.setComments(b,offset,pro_id=this.props.comment.pro_id);
-        //var x = Object.keys(this.props.comment.datacomment.product_id_c==="1").length;
-        //console.log(x);
+        
     }.bind(this))
     .catch(function (error){
         console.log(error);
             if (error.response.status=404) {
-                alert( "This is all comment for this product. Tell us how do you feel about this." );
-                document.getElementById('loadmorecom').style.visibility = 'hidden';
-                
-
+                var loadmore = document.getElementById(this.props.id_product);
+                loadmore.style.display = 'none';
             }
     }.bind(this),) 
     },
     
-    render: function(){
+    render: function(){ 
+        var anchor = {display: "none"};
         return(
            <div className="commentbox collapse" id={"collapse"+this.props.id_product}>
-            <button id="loadmorecom" className="loadmore btn btn-default" onClick={this.handleLoadmorecomment}> Load older comment...</button>  
+            <a id={this.props.id_product} onClick={this.handleLoadmorecomment} style={anchor}> Load older comment...</a>  
             {this.props.data.map((a)=>{ if(this.props.id_product == a.product_id_c){ return(
                 <div className="well col-xs-12" key={a.id}>
                     <div className="asdfghjkl">MinhNguyen:</div>
@@ -311,22 +313,66 @@ var CommentBox = React.createClass({
 });
 
 var ReplyBox = React.createClass({
+    handleLoadmorereply:function(e){
+     var pro_id = this.props.id_product;
+     var com_id = this.props.comment_id;
+     var obj = {
+          "commentid": this.props.reply
+        };
+           function getCount(group) {
+            var count = 0;
+            for (var i = 0; i < obj.commentid.length; i++) {
+                if (obj.commentid[i].reply_id === group) {
+                    count++;
+                }
+            }
+            return count;
+        }
+    var x = getCount(com_id);
+    console.log(getCount(com_id));
+    var offset = x;
+    var limit = 3;
+    axios({
+       url: this.props.url.ajaxreply, 
+        method:'post',
+        data: {limit:limit,pro_id:pro_id,offset:offset,com_id:com_id},
+        
+    })
+    .then(function (response){
+        var a = response.data;
+        var b = a.concat(this.props.reply);
+        this.props.setReply(b,limit,offset,com_id);
+        //var x = Object.keys(this.props.comment.datacomment.product_id_c==="1").length;
+        console.log(a);
+    }.bind(this))
+    .catch(function (error){
+        console.log(error);
+            if (error.response.status=404) {
+                var loadmore = document.getElementById("reply"+this.props.comment_id);
+                loadmore.style.display = 'none';
+                console.log(this.props.comment_id);
+            }
+    }.bind(this),) 
+    },
     render: function(){
-      return(
-        <div className="commentbox collapse" id={"collapseone"+this.props.comment_id}>
-           {this.props.reply.map((a)=>{ if(this.props.comment_id == a.reply_id){ return(
-            <div className="well col-xs-12" key={a.id}>
-                <div className="asdfghjkl">MinhNguyen:</div>
-                    <div className="col-xs-6">
-                    {a.comments}
-                    </div>
-            </div>
-            )}
-              })}
-            <ReplyForm id_product={this.props.id_product} comment_id = {this.props.comment_id}/>
+        var anchorstyle = {display: "none"}; 
+        return(
+            <div className="commentbox collapse" id={"collapseone"+this.props.comment_id}>
+               <a id={"reply"+this.props.comment_id} onClick={this.handleLoadmorereply} style={anchorstyle}> Load older reply...</a> 
+               {this.props.reply.map((a)=>{ if(this.props.comment_id == a.reply_id){ return(
+                <div className="well col-xs-12" key={a.id}>
+                    <div className="asdfghjkl">MinhNguyen:</div>
+                        <div className="col-xs-6">
+                        {a.comments}
+                        </div>
+                </div>
+                )}
+                  })}
+                <ReplyForm id_product={this.props.id_product} comment_id = {this.props.comment_id}/>
 
-        </div>
+            </div>
       );
+      
     }
 });
 var ReplyForm = React.createClass({
@@ -683,7 +729,7 @@ var reducer = function(state,action){
                 reply:{
                     datareply: action.data
                 }
-            }); break;   
+            }); break;
     }
   
     return newState;
@@ -807,7 +853,7 @@ var ReplyBoxState = function(state){
 }
 
 
-ReplyBox = connect(ReplyBoxState)(ReplyBox)
+ReplyBox = connect(ReplyBoxState,CommentDispatch)(ReplyBox)
 
 var ReplyFormState = function(state){
     return{
