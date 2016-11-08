@@ -28,6 +28,18 @@ class Products extends Public_Controller{
             ->build('homepage/index');     
     }
     
+    public function ajaxuserdata(){
+        //$data = $this->session->userdata('user_id');
+        $data = $this->homepage_m->ajaxlike(2);
+
+        echo "<pre>";
+        print_r($data);
+        echo "</pre>";  
+//        echo "<pre>";
+//        print_r($data2);
+//        echo "</pre>"; 
+        $json = $this->output->set_content_type('application/json')->set_output(json_encode($data));      
+    }
     # hiển thị chi tiết sản phẩm 
     public function detail($id_p)
     {
