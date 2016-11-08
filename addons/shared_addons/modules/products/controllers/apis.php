@@ -11,6 +11,7 @@ class Apis extends REST_Controller{
         parent::__construct();
         $this->load->model("homepage_m");
         $this->load->model("products_m");
+        $this->load->library('session');
     }
     
     function ajaxlist_post(){
@@ -63,6 +64,16 @@ class Apis extends REST_Controller{
         $limit = $this->post('limit');
         $offset = $this->post('offset');
         $data = $this->homepage_m->ajaxreply($pro_id,$com_id,$limit,$offset);
+        $this->response($data);
+    }
+    
+    function ajaxlike_post(){
+        $user_id = $this->post('user_id');
+        $data = $this->homepage_m->ajaxlike($user_id);
+        $this->response($data);
+    }
+    function ajaxuserdata_get(){
+        $data = $this->session->userdata('user_id');
         $this->response($data);
     }
 }
