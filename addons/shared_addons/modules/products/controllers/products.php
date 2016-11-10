@@ -30,7 +30,7 @@ class Products extends Public_Controller{
     
     public function ajaxuserdata(){
         //$data = $this->session->userdata('user_id');
-        $data = $this->homepage_m->ajaxlike(2);
+        $data = $this->homepage_m->ajaxlike();
 
         echo "<pre>";
         print_r($data);

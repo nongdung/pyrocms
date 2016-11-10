@@ -2,11 +2,11 @@ var ProductList = React.createClass({
     componentDidMount: function() {
         this.loadProductFromServer();
         this.loadCategoryFromServer();
-        this.loadUserId();
-       
+        this.loadUserId();  
     },
     
     loadUserId:function(){
+        
         axios({
             url:this.props.url.ajaxuserdata
         })
@@ -16,9 +16,10 @@ var ProductList = React.createClass({
         }.bind(this))
         .catch(function (error) {
             console.log(error);
+            this.loadLikedata();
         }.bind(this),);
     },
-    loadLikedata:function(){
+    loadLikedata:function(e){
         axios({
             url:this.props.url.ajaxlike,
             method:'post',
@@ -31,6 +32,8 @@ var ProductList = React.createClass({
         .catch(function (error) {
             console.log(error);
         }.bind(this),);
+        
+   
     },
     
     loadProductFromServer: function() {    
@@ -38,10 +41,8 @@ var ProductList = React.createClass({
             url:this.props.url.ajaxlist,
             //url:"http://localhost/pyrocms-pyrocms/products/apis/ajaxlist",
             method:'post',
-            data: this.props.query, 
-            
+            data: this.props.query,  
         })
-
         .then(function (response) {
             //console.log(response);
             this.props.setProducts(response.data);
@@ -49,6 +50,7 @@ var ProductList = React.createClass({
         .catch(function (error) {
             console.log(error);
         }.bind(this),);
+        
     },
 
     loadCategoryFromServer: function(){
@@ -65,6 +67,7 @@ var ProductList = React.createClass({
             console.log(error);
            
         }.bind(this),)
+       
     },
     
     handleProductloadmore: function(e) {
@@ -165,7 +168,7 @@ var Products = React.createClass({
         return(
             <div className="product">
             
-                <div className="row" key={this.props.id}>
+                <div className="row">
                     <div className="ls col-xs-12" >
 
                         <div className="image col-xs-12">
@@ -192,7 +195,7 @@ var Products = React.createClass({
                         <div className="btn-group btn-group-justified ">
                         {this.props.like.map((a)=>{ if(this.props.id == a.pro_id){ return(
                             <LikeButton key={a.pro_id} pro_id={a.pro_id} likecount={a.likecount} usercount={a.usercount} />
-                                )}
+                            )}
                         })}  
                             <a 
                             name={this.props.id} 
@@ -226,24 +229,36 @@ var LikeButton = React.createClass({
         }
     }, 
     Likeclick: function(){
+        if(this.state.usercount === 2){
+           alert("You need to log in first");
+           window.location = "http://localhost/pyrocms/users/login";
+        }
         if(this.state.usercount === 0){
-        var usercount = this.state.usercount+1;
-        var likecount = this.state.likecount+1;
+            var usercount = this.state.usercount+1;
+            var likecount = this.state.likecount+1;
+            this.setState({usercount:usercount,likecount:likecount});
+            this.handleLikeclickadd({usercount:usercount,likecount:likecount});
         }
         if(this.state.usercount === 1){
-        var usercount = this.state.usercount-1;
-        var likecount = this.state.likecount-1;
+            var usercount = this.state.usercount-1;
+            var likecount = this.state.likecount-1;
+            this.setState({usercount:usercount,likecount:likecount});
+            this.handleLikeclickremove({usercount:usercount,likecount:likecount});
         }
-        this.setState({usercount:usercount,likecount:likecount});
-        this.handleLikeclick({usercount:parseInt(this.props.usercount)+1,likecount:parseInt(this.props.likecount)+1});
+        console.log(this.state.usercount);
     },
     
-    handleLikeclick:function(){
+    handleLikeclickadd:function(){
+        console.log('like');
         console.log(this.state);
+    },
+    handleLikeclickremove: function(){
+        console.log(this.state);
+        console.log('dislike');
     },
     
     render: function(){
-        if(this.state.usercount === 0){
+        if(this.state.usercount === 0 || this.state.usercount === 2){
             var style = {color: "black"};
         }
         if(this.state.usercount === 1){
@@ -253,7 +268,7 @@ var LikeButton = React.createClass({
         return(
             <a className="btn btn-default" onClick={this.Likeclick}>
                 <span id={this.props.pro_id} className="glyphicon glyphicon-heart" style={style}></span>
-                <span>{this.state.likecount}</span>
+                <span>{this.props.likecount}</span>
             </a>
         )
     }
@@ -883,8 +898,8 @@ ProductList = connect(
 
 var LikeButtonState = function(state){
     return{
-        data: state.like
-    }
+        data: state.like, 
+    }  
 };
 LikeButton = connect(LikeButtonState)(LikeButton)
 //send data to Product component

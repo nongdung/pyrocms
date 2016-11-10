@@ -8,7 +8,7 @@ class Homepage_m extends MY_Model
 
     }
     
-    public function ajaxlike($user_id=2){
+    public function ajaxlike($user_id=null){
         $this->db->select('id as pro_id')->from('products_products');
 	$query = $this->db->get()->result_array();
         
@@ -21,24 +21,23 @@ class Homepage_m extends MY_Model
         //$this->db->select('count(*) as usercount')->where('user_id',$user_id);
 	$q1[] = $this->db->get()->result_array();	
         }
-        for($i = 1; $i < count($query)+1; $i++){   
-	$pro_id=$i; 
-        
-	$this->db->select('count(*)')->from('products_like')->where('product_id',$pro_id);
-        $this->db->select('count(*) as usercount')->where('user_id',$user_id);
-	$q2[] = $this->db->get()->result_array();	
+        if($user_id!=null){
+            for($i = 1; $i < count($query)+1; $i++){   
+                $pro_id=$i; 
+                $this->db->select('count(*)')->from('products_like')->where('product_id',$pro_id);
+                $this->db->select('count(*) as usercount')->where('user_id',$user_id);
+                $q2[] = $this->db->get()->result_array();
+            }
+            for ($i = 0; $i <count($q1); $i++){
+                $q[] = array_merge($query[$i],$q1[$i][0], $q2[$i][0]); 
+            }
         }
-//        $user_id=3;
-//        $this->db->select('count(*) as usercount')->from('products_like')->where('user_id',$user_id);
-//        $q2 = $this->db->get()->result_array();
+        $q2[] = array("usercount"=>"2");
         for ($i = 0; $i <count($q1); $i++){
-            $q[] = array_merge($query[$i],$q1[$i][0], $q2[$i][0]); 
-            //$q[] = array_merge($query[$i],$q1[$i][0]); 
-            // $q[] = array($q1[$i][], $q2[$i][]);
+            $q[] = array_merge($query[$i],$q1[$i][0], $q2[0]); 
         }
-        //$q = array_merge($q1,$q2);
         
-         
+
         return $q;
     }
     public function ajaxcategories(){
