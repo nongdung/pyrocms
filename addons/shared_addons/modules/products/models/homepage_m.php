@@ -31,15 +31,29 @@ class Homepage_m extends MY_Model
             for ($i = 0; $i <count($q1); $i++){
                 $q[] = array_merge($query[$i],$q1[$i][0], $q2[$i][0]); 
             }
+            return $q;
         }
+        else{
         $q2[] = array("usercount"=>"2");
         for ($i = 0; $i <count($q1); $i++){
             $q[] = array_merge($query[$i],$q1[$i][0], $q2[0]); 
         }
-        
-
         return $q;
+        }
     }
+    
+    public function add_like($data){
+        $this->db->insert("products_like",$data);
+        return true;
+    }
+    
+    public function remove_like($product_id,$u_id){
+        $this->db->where('product_id', $product_id);
+        $this->db->where('user_id', $u_id);
+        $this->db->delete('products_like');
+        return true;
+    }
+    
     public function ajaxcategories(){
         $this->db->select('c_name,id as id_c');
         $this->db->from('products_categories');

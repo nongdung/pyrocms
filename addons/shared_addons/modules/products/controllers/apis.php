@@ -68,6 +68,20 @@ class Apis extends REST_Controller{
     }
     
     function ajaxlike_post(){
+        if($this->post('addlike')){
+            $data = array(
+                'product_id'    => $this->post('pro_id'),
+                'user_id'       => $this->post('user_id')
+            );
+            $this->homepage_m->add_like($data);
+        }
+        if($this->post('removelike')){
+            
+                $product_id=$this->post('pro_id');
+                $u_id =$this->post('user_id');
+            $this->homepage_m->remove_like($product_id,$u_id);
+        }
+        
         $user_id = $this->post('user_id');
         $data = $this->homepage_m->ajaxlike($user_id);
         $this->response($data);

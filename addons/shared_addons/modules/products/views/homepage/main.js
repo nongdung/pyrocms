@@ -193,8 +193,8 @@ var Products = React.createClass({
                         </div>
 
                         <div className="btn-group btn-group-justified ">
-                        {this.props.like.map((a)=>{ if(this.props.id == a.pro_id){ return(
-                            <LikeButton key={a.pro_id} pro_id={a.pro_id} likecount={a.likecount} usercount={a.usercount} />
+                        {this.props.like.map((a)=>{ if(this.props.id === a.pro_id){ return(
+                            <LikeButton  pro_id={a.pro_id} key={a.pro_id} likecount={a.likecount} usercount={a.usercount} />
                             )}
                         })}  
                             <a 
@@ -225,10 +225,11 @@ var Products = React.createClass({
 var LikeButton = React.createClass({
     getInitialState: function(){
         return {
-            usercount:parseInt(this.props.usercount),likecount:parseInt(this.props.likecount)
+            usercount:parseInt(this.props.usercount),
+            likecount:parseInt(this.props.likecount)
         }
     }, 
-    Likeclick: function(){
+    Likeclick: function(){        
         if(this.state.usercount === 2){
            alert("You need to log in first");
            window.location = "http://localhost/pyrocms/users/login";
@@ -237,24 +238,44 @@ var LikeButton = React.createClass({
             var usercount = this.state.usercount+1;
             var likecount = this.state.likecount+1;
             this.setState({usercount:usercount,likecount:likecount});
-            this.handleLikeclickadd({usercount:usercount,likecount:likecount});
+            this.handleLikeclickadd();
+            return;
         }
         if(this.state.usercount === 1){
             var usercount = this.state.usercount-1;
             var likecount = this.state.likecount-1;
             this.setState({usercount:usercount,likecount:likecount});
-            this.handleLikeclickremove({usercount:usercount,likecount:likecount});
+            this.handleLikeclickremove();
+            return;
         }
-        console.log(this.state.usercount);
+        
     },
     
     handleLikeclickadd:function(){
-        console.log('like');
-        console.log(this.state);
+        axios({
+            url: this.props.url.ajaxlike, 
+            method:'post',
+            data: {addlike:'asd',pro_id:this.props.pro_id,user_id:this.props.user_id}
+        })
+        .then(function (response){ 
+            
+        }.bind(this))
+        .catch(function (error){
+            console.log(error);
+        }.bind(this),)
     },
     handleLikeclickremove: function(){
-        console.log(this.state);
-        console.log('dislike');
+        axios({
+            url: this.props.url.ajaxlike, 
+            method:'post',
+            data: {removelike:'asd',pro_id:this.props.pro_id,user_id:this.props.user_id}
+        })
+        .then(function (response){ 
+
+        }.bind(this))
+        .catch(function (error){
+            console.log(error);
+        }.bind(this),)
     },
     
     render: function(){
@@ -262,13 +283,13 @@ var LikeButton = React.createClass({
             var style = {color: "black"};
         }
         if(this.state.usercount === 1){
-        var style = {color: "red"};
+            var style = {color: "red"};
         }
-        console.log(this.state);
+        
         return(
             <a className="btn btn-default" onClick={this.Likeclick}>
                 <span id={this.props.pro_id} className="glyphicon glyphicon-heart" style={style}></span>
-                <span>{this.props.likecount}</span>
+                <span>{this.state.likecount}</span>
             </a>
         )
     }
@@ -899,6 +920,8 @@ ProductList = connect(
 var LikeButtonState = function(state){
     return{
         data: state.like, 
+        user_id: state.user_id,
+        url: state.url
     }  
 };
 LikeButton = connect(LikeButtonState)(LikeButton)
