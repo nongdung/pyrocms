@@ -71,11 +71,10 @@ class Homepage_m extends MY_Model
         $this->db->join('products_categories','products_categories.id = products_products.category_id');
         $this->db->limit($limit, $offset);
         if($f_id=="1"){
-             $this->db->order_by('p_price','DESC');
+            $this->db->order_by('p_price','DESC');
         }
         if($f_id=="2"){
-             
-             $this->db->order_by('p_price','ASC');
+            $this->db->order_by('p_price','ASC');
         }
         else{
             $this->db->order_by('p_price','ASC');
