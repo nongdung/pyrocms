@@ -25,6 +25,8 @@ class Products extends Public_Controller{
             ->append_metadata('<script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.3.1/redux.min.js"></script>')
             ->append_metadata('<script src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/4.4.0/react-redux.min.js"></script>')
             ->append_metadata('<script src="{{ url:base }}addons/shared_addons/modules/products/views/homepage/polyfill.js"></script>')
+            ->append_metadata('<script src="{{ url:base }}addons/shared_addons/modules/products/js/preload.js"></script>')
+            ->append_metadata('<script src="{{ url:base }}addons/shared_addons/modules/products/js/loadingprocess.js"></script>')
             ->build('homepage/index');     
     }
     
