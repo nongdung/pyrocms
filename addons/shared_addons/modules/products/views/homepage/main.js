@@ -7,6 +7,8 @@ var ProductList = React.createClass({
     },
     loadingprocess: function() {
         document.getElementById("myProgress").style.display = 'none';
+        document.getElementById("imgloadmoreProduct").style.display = 'none';
+        
     },
     
     
@@ -49,8 +51,7 @@ var ProductList = React.createClass({
             data: this.props.query,  
         })
         .then(function (response) {
-            //console.log(response);
-            this.props.setProducts(response.data);
+            this.props.setProducts(response.data);     
         }.bind(this))
         .catch(function (error) {
             console.log(error);
@@ -76,6 +77,7 @@ var ProductList = React.createClass({
     },
     
     handleProductloadmore: function(e) {
+        document.getElementById("imgloadmoreProduct").style.display = '';
         e.preventDefault();
         var limit = 3;
         var offset = this.props.query.offset+limit;
@@ -92,6 +94,7 @@ var ProductList = React.createClass({
             if(response.data.length<4){
                 document.getElementById('loadmorepro').style.display = 'none';
             }
+            document.getElementById("imgloadmoreProduct").style.display = 'none';
         }.bind(this))
         .catch(function (error){
             console.log(error);
@@ -119,7 +122,9 @@ var ProductList = React.createClass({
             return <Products  
              p_name={a.p_name} id={a.id} key={a.id} p_price={a.p_price} p_short_description={a.p_short_description} p_image={a.path}/>
             })}
-            
+            <div className="row text-center" id="imgloadmoreProduct">
+                <img className="imgloadmore" src="addons/shared_addons/modules/products/img/ezgif2.gif" />
+            </div>
             <div className="row text-center">
                 <button id="loadmorepro" className="loadmore btn btn-default" onClick={this.handleProductloadmore}> Load more...</button>
             </div>
@@ -134,6 +139,7 @@ var Products = React.createClass({
         }
     },
     handleShowComment: function(e){
+        document.getElementById("imgloadmorecomment"+this.props.id).style.display = '';
         this.setState({ pro_id:e.target.name, disabled: true});
         var pro_id = e.target.name;
         if(!pro_id){
@@ -162,12 +168,14 @@ var Products = React.createClass({
         var a = this.props.comment.datacomment;
         var b = a.concat(response.data);
         this.props.setComments(b,offset,pro_id);
+        document.getElementById("imgloadmorecomment"+this.props.id).style.display = 'none';
         if(response.data.length>2){
             var loadmore = document.getElementById(this.props.id);
-            loadmore.style.display = '';}
+            loadmore.style.display = '';} 
     }.bind(this))
     .catch(function (error){
         console.log(error);
+        document.getElementById("imgloadmorecomment"+this.props.id).style.display = 'none';
     }.bind(this),)
 
     },
@@ -178,6 +186,7 @@ var Products = React.createClass({
     },
     
     render: function(){
+        var imgloadmorecomment = {display: "none"};
         return(
             <div className="product">
                 <div className="row">
@@ -222,7 +231,10 @@ var Products = React.createClass({
                             >
                               <span className="glyphicon glyphicon-comment"></span></a>
                             <a className="btn btn-default" onClick={this.testFunction}><span className="glyphicon glyphicon-share-alt"></span></a>
-                        </div>        
+                        </div>  
+                        <div className="col-xs-12 col-md-12 text-center" id={"imgloadmorecomment"+this.props.id} style={imgloadmorecomment}>
+                            <img className="imgloadmore" src="addons/shared_addons/modules/products/img/ezgif2.gif" />
+                        </div>
                         <CommentBox id_product={this.props.id}/> 
  
                     </div>
@@ -313,6 +325,7 @@ var CommentBox = React.createClass({
         }
     },
     handleShowReply: function(e){console.log(e);
+        document.getElementById("imgloadmoreReply"+e.target.name).style.display = '';
         var anchor = document.getElementById(e.target.id);
         anchor.style.display="none";
         var com_id = e.target.name;
@@ -341,6 +354,7 @@ var CommentBox = React.createClass({
             var a = this.props.reply;
             var b = a.concat(response.data);
             this.props.setReply(b,limit,offset,com_id);
+            document.getElementById("imgloadmoreReply"+com_id).style.display = 'none';
             if(response.data.length>2){
             var loadmore = document.getElementById("reply"+com_id);
             loadmore.style.display = '';}
@@ -348,7 +362,7 @@ var CommentBox = React.createClass({
         .catch(function (error){
             
             console.log(error);
-            
+            document.getElementById("imgloadmoreReply"+com_id).style.display = 'none';
         }.bind(this),)
     },
     handleLoadmorecomment:function(e){
@@ -392,6 +406,7 @@ var CommentBox = React.createClass({
     
     render: function(){ 
         var anchor = {display: "none"};
+        var imgloadmoreReply = {display: "none"};
         return(
            <div className="commentbox collapse" id={"collapse"+this.props.id_product}>
             <a id={this.props.id_product} onClick={this.handleLoadmorecomment} style={anchor}> Load older comment...</a>  
@@ -420,6 +435,9 @@ var CommentBox = React.createClass({
 
                 </div>
                 <div className="col-xs-12">
+                        <div className="col-xs-12 col-md-12 text-center" id={"imgloadmoreReply"+a.id} style={imgloadmoreReply}>
+                            <img className="imgloadmore" src="addons/shared_addons/modules/products/img/ezgif.gif" />
+                        </div>
                     <ReplyBox id_product={this.props.id_product} comment_id = {a.id}/>  
                 </div>
                 </div>)}
