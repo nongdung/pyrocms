@@ -1,9 +1,14 @@
 var ProductList = React.createClass({
     componentDidMount: function() {
+        this.loadingprocess();
         this.loadProductFromServer();
         this.loadCategoryFromServer();
         this.loadUserId();  
     },
+    loadingprocess: function() {
+        document.getElementById("myProgress").style.display = 'none';
+    },
+    
     
     loadUserId:function(){
         
@@ -84,22 +89,25 @@ var ProductList = React.createClass({
             var a = this.props.data;
             var b = a.concat(response.data);
             this.props.loadmoreProducts(b,offset);
+            if(response.data.length<4){
+                document.getElementById('loadmorepro').style.display = 'none';
+            }
         }.bind(this))
         .catch(function (error){
             console.log(error);
             if (error.response.status=404) {
-                alert( "This is all Products for this Category. Choose your favorite and share with your friends about us." );
-                document.getElementById('loadmorepro').style.visibility = 'hidden';
-                
-
+                document.getElementById('loadmorepro').style.display = 'none';
             } 
         }.bind(this),)
         
     },
 
-    render: function(){
-    return(
+    render: function(){ 
+        return(
         <div className="main">
+            <div id="myProgress">
+              <p id="myBar"></p>
+            </div>
             <div className="row">
                 <div className="filter col-xs-12">
                     <Categories />
@@ -116,14 +124,13 @@ var ProductList = React.createClass({
                 <button id="loadmorepro" className="loadmore btn btn-default" onClick={this.handleProductloadmore}> Load more...</button>
             </div>
         </div>
-      );
-    }
+      );}
 });
 
 var Products = React.createClass({
     getInitialState: function(){
         return {
-          pro_id: '0', disabled: false,comment:''
+          pro_id: '0', disabled: false,comment:'',cat_id:this.props.cat_id
         }
     },
     handleShowComment: function(e){
@@ -164,13 +171,17 @@ var Products = React.createClass({
     }.bind(this),)
 
     },
+    
+    testFunction: function(){
+       console.log(window.location.hostname+"/pyrocms/users/login");
+       console.log(window.location.replace("/pyrocms/users/login"));
+    },
+    
     render: function(){
         return(
             <div className="product">
-            
                 <div className="row">
                     <div className="ls col-xs-12" >
-
                         <div className="image col-xs-12">
                             <a href={window.location+'/detail/'+ this.props.id}>
                                <img src={this.props.p_image} />
@@ -210,7 +221,7 @@ var Products = React.createClass({
                             disabled={this.state.disabled}
                             >
                               <span className="glyphicon glyphicon-comment"></span></a>
-                            <a href="#" className="btn btn-default"><span className="glyphicon glyphicon-share-alt"></span></a>
+                            <a className="btn btn-default" onClick={this.testFunction}><span className="glyphicon glyphicon-share-alt"></span></a>
                         </div>        
                         <CommentBox id_product={this.props.id}/> 
  
@@ -232,7 +243,7 @@ var LikeButton = React.createClass({
     Likeclick: function(){        
         if(this.state.usercount === 2){
            alert("You need to log in first");
-           window.location = "http://localhost/pyrocms/users/login";
+           window.location.replace("/pyrocms/users/login");
         }
         if(this.state.usercount === 0){
             var usercount = this.state.usercount+1;
@@ -288,7 +299,7 @@ var LikeButton = React.createClass({
         
         return(
             <a className="btn btn-default" onClick={this.Likeclick}>
-                <span id={this.props.pro_id} className="glyphicon glyphicon-heart" style={style}></span>
+                <span id={"like"+this.props.pro_id} className="glyphicon glyphicon-heart" style={style}></span>
                 <span>{this.state.likecount}</span>
             </a>
         )
@@ -386,30 +397,31 @@ var CommentBox = React.createClass({
             <a id={this.props.id_product} onClick={this.handleLoadmorecomment} style={anchor}> Load older comment...</a>  
             {this.props.data.map((a)=>{ if(this.props.id_product == a.product_id_c){ return(
                 <div className="well col-xs-12" key={a.id}>
-                    <div className="asdfghjkl">MinhNguyen:</div>
-                    <div className="col-xs-12">
+                    
+                <div className="asdfghjkl">MinhNguyen:</div>
+                    
+                <div className="col-xs-12">
 
                     {a.comments}
-                    </div>
-                    <div className="col-xs-6">
-                     
-                          <a
-                          id={a.id}
-                          name ={a.id}
-                          role="button" 
-                          data-parent="#accordion" 
-                          data-toggle="collapse" 
-                          href={"#collapseone"+a.id}
-                          aria-expanded="false" 
-                          aria-controls={"collapseone"+a.id} 
-                          onClick={this.handleShowReply}
-                          
-                          >reply</a>
-                      
-                    </div>
-                    <div className="col-xs-12">
-                        <ReplyBox id_product={this.props.id_product} comment_id = {a.id}/>  
-                    </div>
+                    
+                </div>
+                <div className="col-xs-6">
+                    <a
+                    id={a.id}
+                    name ={a.id}
+                    role="button" 
+                    data-parent="#accordion" 
+                    data-toggle="collapse" 
+                    href={"#collapseone"+a.id}
+                    aria-expanded="false" 
+                    aria-controls={"collapseone"+a.id} 
+                    onClick={this.handleShowReply}
+                    >reply</a>
+
+                </div>
+                <div className="col-xs-12">
+                    <ReplyBox id_product={this.props.id_product} comment_id = {a.id}/>  
+                </div>
                 </div>)}
             })} 
             
@@ -495,15 +507,20 @@ var ReplyForm = React.createClass({
     },
     
     handleSubmitReply: function(e){
-      e.preventDefault();
-      var comment = this.state.comment.trim();
-      if(!comment){
-        return;
-      }
-      this.onhandleSubmitReply({comment:comment,pro_id:this.props.id_product,com_id:this.props.comment_id});
-      
-      this.setState({comment:'',pro_id:'',com_id:''});
-      
+        e.preventDefault();
+        if(this.props.user_id===''){
+            alert("You need to log in first");
+            window.location.replace("/pyrocms/users/login");
+        }
+        else{
+            var comment = this.state.comment.trim();
+            if(!comment){
+              return;
+            }
+            this.onhandleSubmitReply({comment:comment,pro_id:this.props.id_product,com_id:this.props.comment_id});
+
+            this.setState({comment:'',pro_id:'',com_id:''});
+        }
     },
     
     onhandleSubmitReply:function(e){
@@ -559,14 +576,21 @@ var CommentForm = React.createClass({
     },
 
     handleSubmitComment: function(e){
-      e.preventDefault();
-      var comment = this.state.comment.trim();
-      if(!comment){
-        return;
-      }
-      this.onhandleSubmitComment({comment:comment,pro_id:this.props.id_product});
-      this.setState({comment:'',pro_id:''});
-      console.log(this.state);
+        e.preventDefault();
+        if(this.props.user_id===''){
+            alert("You need to log in first");
+            window.location.replace("/pyrocms/users/login");
+        }
+        else{
+            console.log('432432');
+            var comment = this.state.comment.trim();
+            if(!comment){
+              return;
+            }
+            this.onhandleSubmitComment({comment:comment,pro_id:this.props.id_product});
+            this.setState({comment:'',pro_id:''});
+            console.log(this.state);
+        }
     },
     
     onhandleSubmitComment:function(e){
@@ -623,6 +647,7 @@ var Categories = React.createClass({
      },
   
     handleSubmit:function(e){
+        document.getElementById("myProgress").style.display = '';
         this.setState({cat_id: e.target.value}); 
         e.preventDefault();
         var cat_id = e.target.value;
@@ -638,11 +663,15 @@ var Categories = React.createClass({
             url: this.props.url.ajaxlist,
             method:'post',
             data: {limit:this.props.query.limit, offset: offset,cat_id:cat_id,f_id:f_id},
-           
         })
         .then(function (response){
             this.props.changeCategories(response.data,cat_id,offset);
-            //console.log(response.data);
+            document.getElementById("myProgress").style.display = 'none';
+            if(response.data.length<3){
+            document.getElementById('loadmorepro').style.display = 'none';
+            return;
+            }
+            document.getElementById('loadmorepro').style.display = '';
         }.bind(this))
         .catch(function (error){
             console.log(error);
@@ -659,14 +688,13 @@ var Categories = React.createClass({
             return(
             <option key={c.id_c} value={c.id_c}>{c.c_name}</option>);
         })
+        
         return(
           <div className="filter-category col-xs-6" >
-              <select className="form-control" onChange={this.handleSubmit} value={this.state.value} >
+              <select className="form-control" onClick={move()} onChange={this.handleSubmit} value={this.state.value} >
                   <option value="">All</option>
                   {Cat}
              </select>
-
-
          </div>
         )
     }
@@ -679,6 +707,7 @@ var Filters = React.createClass({
         }
     },
     handleFilter: function(e){
+        document.getElementById("myProgress").style.display = '';
         this.setState({f_id: e.target.value});
         e.preventDefault();
         var f_id=e.target.value;
@@ -698,7 +727,12 @@ var Filters = React.createClass({
         })
         .then(function (response){
             this.props.changeFilter(response.data,f_id,offset);
-            //console.log(response.data);
+            document.getElementById("myProgress").style.display = 'none';
+            if(response.data.length<3){
+            document.getElementById('loadmorepro').style.display = 'none';
+            return;
+            }
+            document.getElementById('loadmorepro').style.display = '';
         }.bind(this))
         .catch(function (error){
             console.log(error);
@@ -708,11 +742,9 @@ var Filters = React.createClass({
     render: function(){
         return(
             <div className="filter-category col-xs-6">
-                <select className="form-control" onChange={this.handleFilter} value={this.state.f_id}>
+                <select className="form-control" onChange={this.handleFilter} onClick={move()} value={this.state.f_id}>
                     <option value="1">Price high to low</option>
                     <option value="2">Price low to high</option>
-                    <option value="3">Most Comment</option>
-                    <option value="4">Most Like</option>
                 </select>
             </div>                
         );
@@ -930,7 +962,8 @@ var ProductsState = function(state){
     return {
         url: state.url,
         comment: state.comment,
-        like: state.like
+        like: state.like,
+        cat_id: state.query.cat_id
     }
 };
 var CommentDispatch = function(dispatch){
@@ -965,7 +998,7 @@ var CommentBoxState = function(state){
         comment: state.comment,
         url: state.url,
         reply: state.reply.datareply,
-
+       
     }
 }
 CommentBox = connect(
@@ -976,7 +1009,8 @@ CommentBox = connect(
 var CommentFormState = function(state){
     return{
         comment:state.comment,
-        url:state.url   
+        url:state.url ,  
+        user_id: state.user_id
     }
 };
 
@@ -1006,7 +1040,8 @@ ReplyBox = connect(ReplyBoxState,CommentDispatch)(ReplyBox)
 var ReplyFormState = function(state){
     return{
         url: state.url,
-        reply:state.reply.datareply
+        reply:state.reply.datareply,
+        user_id:state.user_id
     }
 }
 
