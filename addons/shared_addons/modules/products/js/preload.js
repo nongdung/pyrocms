@@ -1,5 +1,5 @@
 $(function() {
-		$(".preload").fadeOut(5000, function() {
+		$(".preload").fadeOut(3000, function() {
 			$("#product").fadeIn(1000);
 		});
 	});

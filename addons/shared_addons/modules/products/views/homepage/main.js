@@ -138,7 +138,7 @@ var Products = React.createClass({
           pro_id: '0', disabled: false,comment:'',cat_id:this.props.cat_id
         }
     },
-    handleShowComment: function(e){
+    handleShowComment: function(e){        
         document.getElementById("imgloadmorecomment"+this.props.id).style.display = '';
         this.setState({ pro_id:e.target.name, disabled: true});
         var pro_id = e.target.name;
@@ -407,20 +407,20 @@ var CommentBox = React.createClass({
     render: function(){ 
         var anchor = {display: "none"};
         var imgloadmoreReply = {display: "none"};
+       
         return(
            <div className="commentbox collapse" id={"collapse"+this.props.id_product}>
             <a id={this.props.id_product} onClick={this.handleLoadmorecomment} style={anchor}> Load older comment...</a>  
             {this.props.data.map((a)=>{ if(this.props.id_product == a.product_id_c){ return(
                 <div className="well col-xs-12" key={a.id}>
+                <a>
+                    <img className="comment-avatar" src="addons/shared_addons/modules/products/img/avartar.jpg" />
+                </a>   
+                <div className="asdfghjkl col-xs-3">MinhNguyen:</div>
                     
-                <div className="asdfghjkl">MinhNguyen:</div>
-                    
-                <div className="col-xs-12">
-
+                <div className="col-xs-9">
                     {a.comments}
-                    
-                </div>
-                <div className="col-xs-6">
+                    <div className="">
                     <a
                     id={a.id}
                     name ={a.id}
@@ -431,9 +431,15 @@ var CommentBox = React.createClass({
                     aria-expanded="false" 
                     aria-controls={"collapseone"+a.id} 
                     onClick={this.handleShowReply}
-                    >reply</a>
-
+                    >reply </a>
+                    <span>{
+                    Date.timeBetween(new Date(parseInt(a.created)), new Date())
+                    }</span>
                 </div>
+                </div>
+                
+                
+               
                 <div className="col-xs-12">
                         <div className="col-xs-12 col-md-12 text-center" id={"imgloadmoreReply"+a.id} style={imgloadmoreReply}>
                             <img className="imgloadmore" src="addons/shared_addons/modules/products/img/ezgif.gif" />
@@ -499,6 +505,9 @@ var ReplyBox = React.createClass({
                <a id={"reply"+this.props.comment_id} onClick={this.handleLoadmorereply} style={anchorstyle}> Load older reply...</a> 
                {this.props.reply.map((a)=>{ if(this.props.comment_id == a.reply_id){ return(
                 <div className="well col-xs-12" key={a.id}>
+                    <a>
+                        <img className="comment-avatar" src="addons/shared_addons/modules/products/img/avartar.jpg" />
+                    </a>
                     <div className="asdfghjkl">MinhNguyen:</div>
                         <div className="col-xs-6">
                         {a.comments}
