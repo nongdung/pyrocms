@@ -110,7 +110,7 @@ class Homepage_m extends MY_Model
     
     public function ajaxreply($pro_id=null,$com_id=null,$limit=2,$offset=0)
     {
-            $q =" SELECT * FROM (SELECT comments,product_id_c,reply_id,default_products_comment.id
+            $q =" SELECT * FROM (SELECT (UNIX_TIMESTAMP(default_products_comment.created)*1000) as created,comments,product_id_c,reply_id,default_products_comment.id
                     FROM default_products_comment 
                     INNER JOIN default_products_products 
                     ON default_products_comment.product_id_c = default_products_products.id

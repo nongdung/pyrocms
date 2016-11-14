@@ -432,7 +432,7 @@ var CommentBox = React.createClass({
                     aria-controls={"collapseone"+a.id} 
                     onClick={this.handleShowReply}
                     >reply </a>
-                    <span>{
+                    <span className="commentTime">{
                     Date.timeBetween(new Date(parseInt(a.created)), new Date())
                     }</span>
                 </div>
@@ -509,9 +509,13 @@ var ReplyBox = React.createClass({
                         <img className="comment-avatar" src="addons/shared_addons/modules/products/img/avartar.jpg" />
                     </a>
                     <div className="asdfghjkl">MinhNguyen:</div>
-                        <div className="col-xs-6">
+                        <div className="col-xs-9">
                         {a.comments}
                         </div>
+                        
+                        <div className="commentTime col-xs-9">{
+                        Date.timeBetween(new Date(parseInt(a.created)), new Date())
+                        }</div>
                 </div>
                 )}
                   })}
