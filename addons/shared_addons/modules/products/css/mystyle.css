@@ -1,10 +1,24 @@
 /*CSS for hompage*/
+html { 
+    height:100%;
+}
+
+
+footer{
+    display: none
+}
 body{
     background-color:#DCDCDC;
+    min-height:100%;
 }
 #product {
 	display:none;
+        padding-bottom: 60px;
 }
+#detail {
+    padding-bottom: 60px;
+}
+
 /*process bar*/
 #myProgress {
     position: relative;
@@ -18,7 +32,15 @@ body{
     height: 100%;
     background-color: green;
 }
-
+.glyphicon{
+    top: 3px;
+}
+.btnmain{
+   border: none;
+   border-top: 0.2px solid #f2f2f2; 
+   border-radius: 0;
+   overflow: hidden; 
+}
 .asdfghjkl {
     color:blue;
 }
@@ -40,7 +62,7 @@ body{
 
 
 /*search box*/
-.input-group[class*=col-]{
+.commentForm[class*=col-]{
     padding-top:5px;
     padding-left: 0px;
     padding-right: 0px;
@@ -100,22 +122,40 @@ img{
 /*commentbox homepage*/
 .well{
     margin-bottom: 0;
-    padding:0;
+    padding:4px;
+   
+    border: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
 }
+
+.reply{
+     padding-left: 30px;
+}
+
+.commentFormReply[class*=col-]{
+    padding-left: 30px;
+}
+
+
 .commentbox {
-    background-color: #f5f5f5;
+    background-color: #f6f7f9;
 }
 .commentTime{
-    color: grey
+    color: grey;
+}
+.commentTimeReply{
+    color: grey;
+    padding-left: 30px;
 }
 .comment-avatar {
     display: inline-block;
     float: left;
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     border-radius: 2px;
     margin-right: 0px;
-    margin-left: 5px;
+    margin-left: 0px;
     margin-top:5px
 }
 
@@ -152,12 +192,29 @@ img{
     width: relative;
 }
 /*ipad screen design*/ 
+@media (min-width: 768px){.navbar-right {float: none!important}
+}
+
 @media screen and (min-width: 768px) {
     .container-fluild{
-        width: 768px;
+        width: 680px;
         margin: 0 auto;
     }
+    .product{
+       padding-left: 15px;
+       padding-right: 15px
+    }
+    .navbar-nav{
+        float: none
+    }
+    .navbar-right{
+        float: none
+    }
     
+    .asd {
+    background:rgba(0,0,0,0.1); 
+        float: none
+    }
     img{
     width:100%;
     height:350px;
@@ -170,12 +227,123 @@ img{
     padding-right: 15px;
     }
     
+    .loadmore{
+         width: 680px;
+         margin-top: 10px
+    }
+    #custom-search-input{
+        width: 680px
+    }
 }
 
 .glyphicon-heart{color:#DC143C;}
-    
-    
+.glyphicon-home{color:#DC143C;}
+.glyphicon-search{color:#DC143C;}
+/*nav bar*/
 
-   
-    
-    
+.asd {
+    background:rgba(0,0,0,0.1); 
+
+}
+
+.homebutton{border-right: 1px solid red}
+.searchbutton{border-left: 1px solid red}
+/*
+.navbar-nav.mobile-bar {
+	display: flex;	            
+}*/
+.navbar-nav.mobile-bar > li {
+	-webkit-flex-grow: 1;
+	flex-grow: 1;
+	text-align: center;
+}
+
+
+ .navbar-nav.mobile-bar {
+	list-style: none;
+	-ms-box-orient: horizontal;
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -moz-flex;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-justify-content: space-around;
+	justify-content: space-around;
+	-webkit-flex-flow: row wrap;
+	flex-flow: row wrap;
+	-webkit-align-items: stretch;
+	align-items: stretch;
+	margin: 0px 0px;
+} 
+
+
+/*searchbox*/
+#custom-search-input{
+    padding: 3px;
+    border: solid 1px #E4E4E4;
+    border-radius: 6px;
+    background-color: #fff;
+}
+
+#custom-search-input input{
+    border: 0;
+    box-shadow: none;
+}
+
+#custom-search-input button{
+    margin: 2px 0 0 0;
+    background: none;
+    box-shadow: none;
+    border: 0;
+    color: #666666;
+    padding: 0 8px 0 10px;
+    border-left: solid 1px #ccc;
+}
+
+#custom-search-input button:hover{
+    border: 0;
+    box-shadow: none;
+    border-left: solid 1px #ccc;
+}
+
+#custom-search-input .glyphicon-search{
+    font-size: 23px;
+}
+.searchresult{
+    background-color: white;
+}
+.searchresult .itemresult{
+    border-bottom:#eee 1px solid;
+}
+.searchresultimg{
+    display: inline-block;
+    width: 65px;
+    height: 65px;
+    border-radius: 2px;
+    margin-right: 0px;
+    margin-left: 0px;
+    margin-top:5px
+}
+
+
+.res-name {
+    font-size: 13px;
+    overflow: hidden;
+    -ms-text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    white-space: initial;
+    color: #222;
+}
+.res-price{
+    color: #777;
+    font-size: 11px;
+    font-weight: 400;
+    text-shadow: none;
+    white-space: normal;
+}
+
+#loadmorecommentbutton{
+    padding-left: 19px
+}
