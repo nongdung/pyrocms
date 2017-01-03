@@ -16,19 +16,19 @@ class Products extends Public_Controller{
     public function index()
     {
           $this->template
-            ->title($this->module_details['name'])
-            ->append_metadata(' <script src="https://unpkg.com/react@15.3.0/dist/react.js"></script>')
-            ->append_metadata('<script src="https://unpkg.com/react-dom@15.3.0/dist/react-dom.js"></script>')
-            ->append_metadata('<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>')
+             ->title($this->module_details['name'])
+             ->append_metadata(' <script src="https://unpkg.com/react@15.3.0/dist/react.js"></script>')                 
+             ->append_metadata('<script src="https://unpkg.com/react-dom@15.3.0/dist/react-dom.js"></script>')
+             ->append_metadata('<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>')
             ->append_metadata('<script src="https://unpkg.com/axios/dist/axios.min.js"></script>')
-            ->append_metadata('<link rel="stylesheet" href="{{ url:base }}/addons/shared_addons/modules/products/css/mystyle.css">')
-            ->append_metadata('<script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.3.1/redux.min.js"></script>')
-            ->append_metadata('<script src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/4.4.0/react-redux.min.js"></script>')
-            ->append_metadata('<script src="{{ url:base }}addons/shared_addons/modules/products/views/homepage/polyfill.js"></script>')
-            ->append_metadata('<script src="{{ url:base }}addons/shared_addons/modules/products/js/preload.js"></script>')
+             ->append_metadata('<link rel="stylesheet" href="{{ url:base }}/addons/shared_addons/modules/products/css/mystyle.css">')
+             ->append_metadata('<script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.3.1/redux.min.js"></script>')
+             ->append_metadata('<script src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/4.4.0/react-redux.min.js"></script>')
+             ->append_metadata('<script src="{{ url:base }}addons/shared_addons/modules/products/views/homepage/polyfill.js"></script>')
+             ->append_metadata('<script src="{{ url:base }}addons/shared_addons/modules/products/js/preload.js"></script>')
             ->append_metadata('<script src="{{ url:base }}addons/shared_addons/modules/products/js/loadingprocess.js"></script>')
-            ->append_metadata('<script src="{{ url:base }}addons/shared_addons/modules/products/js/timecalculator.js"></script>')
-            ->build('homepage/index');     
+             ->append_metadata('<script src="{{ url:base }}addons/shared_addons/modules/products/js/timecalculator.js"></script>')
+            ->build('homepage/index');   
     }
     
     public function ajaxuserdata(){
@@ -49,12 +49,19 @@ class Products extends Public_Controller{
         $this->session->set_userdata('id_p', $id_p);
         $this->template
                 ->title($this->module_details['name'])
-                ->append_metadata('<script src="https://unpkg.com/react@15.3.0/dist/react.js"></script>')
+                ->append_metadata(' <script src="https://unpkg.com/react@15.3.0/dist/react.js"></script>')
                 ->append_metadata('<script src="https://unpkg.com/react-dom@15.3.0/dist/react-dom.js"></script>')
                 ->append_metadata('<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>')
-                ->append_metadata('<script src="https://unpkg.com/jquery@3.1.0/dist/jquery.min.js"></script>')
+                ->append_metadata('<script src="https://unpkg.com/axios/dist/axios.min.js"></script>')
                 ->append_metadata('<link rel="stylesheet" href="{{ url:base }}/addons/shared_addons/modules/products/css/mystyle.css">')
-                ->build('detail/detail_p');                     
+                ->append_metadata('<link rel="stylesheet" href="{{ url:base }}/addons/shared_addons/modules/products/css/detail.css">')
+                ->append_metadata('<script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.3.1/redux.min.js"></script>')
+                ->append_metadata('<script src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/4.4.0/react-redux.min.js"></script>')
+                ->append_metadata('<script src="{{ url:base }}addons/shared_addons/modules/products/views/detail/polyfill.js"></script>')
+                ->append_metadata('<script src="{{ url:base }}addons/shared_addons/modules/products/js/preload.js"></script>')
+                ->append_metadata('<script src="{{ url:base }}addons/shared_addons/modules/products/js/loadingprocess.js"></script>')
+                ->append_metadata('<script src="{{ url:base }}addons/shared_addons/modules/products/js/timecalculator.js"></script>')
+                ->build('detail/detail_p');                    
     }
     
     public function ajaxdetail()
@@ -97,6 +104,29 @@ class Products extends Public_Controller{
         $json = $this->output->set_content_type('application/json')->set_output(json_encode($data)); 
         #echo "<pre>"; print_r($data); die();
     }
-  
+   
+    public function search(){
+         $this->template
+             ->title($this->module_details['name'])
+             ->append_metadata(' <script src="https://unpkg.com/react@15.3.0/dist/react.js"></script>')
+             ->append_metadata('<script src="https://unpkg.com/react-dom@15.3.0/dist/react-dom.js"></script>')
+             ->append_metadata('<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>')
+            ->append_metadata('<script src="https://unpkg.com/axios/dist/axios.min.js"></script>')
+             ->append_metadata('<link rel="stylesheet" href="{{ url:base }}/addons/shared_addons/modules/products/css/mystyle.css">')
+             ->append_metadata('<script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.3.1/redux.min.js"></script>')
+             ->append_metadata('<script src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/4.4.0/react-redux.min.js"></script>')
+             ->append_metadata('<script src="{{ url:base }}addons/shared_addons/modules/products/views/homepage/polyfill.js"></script>')
+             ->append_metadata('<script src="{{ url:base }}addons/shared_addons/modules/products/js/preload.js"></script>')
+            ->append_metadata('<script src="{{ url:base }}addons/shared_addons/modules/products/js/loadingprocess.js"></script>')
+             ->append_metadata('<script src="{{ url:base }}addons/shared_addons/modules/products/js/timecalculator.js"></script>')
+            ->build('homepage/search');  
+    }
+    
+    public function commentcount(){
+        $data= $this->homepage_m->ajaxcommentcount();
+        echo "<pre>";
+        print_r($data);
+        echo "</pre>"; 
+    }
 }
 
