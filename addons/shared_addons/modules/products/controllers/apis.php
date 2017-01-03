@@ -13,7 +13,14 @@ class Apis extends REST_Controller{
         $this->load->model("products_m");
         $this->load->library('session');
     }
-    
+    function ajaxlistsearch_post(){
+        $limit = $this->post('limit');
+        $offset = $this->post('offset');
+        $cat_id = $this->post('cat_id');
+        $f_id = $this->post('f_id');
+        $data = $this->homepage_m->ajaxlistsearch($limit,$offset,$cat_id,$f_id);
+        $this->response($data);
+    }
     function ajaxlist_post(){
         $limit = $this->post('limit');
         $offset = $this->post('offset');
@@ -69,25 +76,51 @@ class Apis extends REST_Controller{
     
     function ajaxlike_post(){
         if($this->post('addlike')){
-            $data = array(
-                'product_id'    => $this->post('pro_id'),
-                'user_id'       => $this->post('user_id')
-            );
-            $this->homepage_m->add_like($data);
+            $product_id=$this->post('pro_id');
+            $u_id =$this->post('user_id');
+            $this->homepage_m->addlikedyna($product_id, $u_id);
         }
         if($this->post('removelike')){
             
-                $product_id=$this->post('pro_id');
-                $u_id =$this->post('user_id');
-            $this->homepage_m->remove_like($product_id,$u_id);
+            $product_id=$this->post('pro_id');
+            $u_id =$this->post('user_id');
+            $this->homepage_m->deletelike($product_id,$u_id);
         }
         
         $user_id = $this->post('user_id');
-        $data = $this->homepage_m->ajaxlike($user_id);
+        $data = $this->homepage_m->loadlike($user_id);
+        //$data = $this->pyrocache->model('homepage_m', 'loadlike', array($user_id), 7200);
+        $this->response($data);
+    }
+    
+    function ajaxlikedetail_post(){
+        if($this->post('addlike')){
+            $product_id=$this->post('pro_id');
+            $u_id =$this->post('user_id');
+            $this->homepage_m->addlikedyna($product_id, $u_id);
+        }
+        if($this->post('removelike')){
+            
+            $product_id=$this->post('pro_id');
+            $u_id =$this->post('user_id');
+            $this->homepage_m->deletelike($product_id,$u_id);
+        }
+        $pro_id = $this->post('pro_id');
+        $user_id = $this->post('user_id');
+        $data = $this->homepage_m->loadlikedetail($user_id,$pro_id);
         $this->response($data);
     }
     function ajaxuserdata_get(){
         $data = $this->session->userdata('user_id');
+        $this->response($data);
+    }
+    function ajaxproductid_get(){
+        $data = $this->session->userdata('id_p');
+        $this->response($data);
+    }
+    public function ajaxcommentcount_post(){
+        $pro_id = $this->post('pro_id');
+        $data= $this->homepage_m->ajaxcommentcount($pro_id);
         $this->response($data);
     }
 }
