@@ -3,17 +3,30 @@ var ProductList = React.createClass({
         this.loadingprocess();
         this.loadProductFromServer();
         this.loadCategoryFromServer();
-        this.loadUserId();  
+        this.loadUserId(); 
+        this.loadcommentcount();
     },
     loadingprocess: function() {
         document.getElementById("myProgress").style.display = 'none';
         document.getElementById("imgloadmoreProduct").style.display = 'none';
         
     },
-    
+    loadcommentcount: function(){
+        axios({
+            url:this.props.url.ajaxcommentcount, 
+            method:'post',
+            data:{pro_id:''}
+        })
+        .then(function (response) {
+           this.props.setCommentcount(response.data);
+            
+        }.bind(this))
+        .catch(function (error) {
+            console.log(error);
+        }.bind(this),);
+    },
     
     loadUserId:function(){
-        
         axios({
             url:this.props.url.ajaxuserdata
         })
@@ -46,7 +59,7 @@ var ProductList = React.createClass({
     loadProductFromServer: function() {    
         axios({
             url:this.props.url.ajaxlist,
-            //url:"http://localhost/pyrocms-pyrocms/products/apis/ajaxlist",
+            //url:"http://localhost/pyrocms/products/apis/ajaxlist",
             method:'post',
             data: this.props.query,  
         })
@@ -91,7 +104,8 @@ var ProductList = React.createClass({
             var a = this.props.data;
             var b = a.concat(response.data);
             this.props.loadmoreProducts(b,offset);
-            if(response.data.length<4){
+            console.log(response.data);
+            if(response.data.length<3){
                 document.getElementById('loadmorepro').style.display = 'none';
             }
             document.getElementById("imgloadmoreProduct").style.display = 'none';
@@ -106,6 +120,7 @@ var ProductList = React.createClass({
     },
 
     render: function(){ 
+        
         return(
         <div className="main">
             <div id="myProgress">
@@ -187,6 +202,9 @@ var Products = React.createClass({
     
     render: function(){
         var imgloadmorecomment = {display: "none"};
+        var commentcount = this.props.commentcount;
+        
+        var style = {color: "grey",paddingLeft:5};
         return(
             <div className="product">
                 <div className="row">
@@ -219,7 +237,7 @@ var Products = React.createClass({
                         })}  
                             <a 
                             name={this.props.id} 
-                            className="btn btn-default" 
+                            className="btnmain btn btn-default" 
                             role="button"
                             data-parent="#accordion" 
                             data-toggle="collapse" 
@@ -229,8 +247,10 @@ var Products = React.createClass({
                             onClick={this.handleShowComment} 
                             disabled={this.state.disabled}
                             >
-                              <span className="glyphicon glyphicon-comment"></span></a>
-                            <a className="btn btn-default" onClick={this.testFunction}><span className="glyphicon glyphicon-share-alt"></span></a>
+                              <span className="glyphicon glyphicon-comment"></span>
+                            { commentcount.map((b)=>{if(this.props.id === b.pro_id){return  <span style={style}>{b.commentcount}</span>} })}                    
+                            </a>
+                            <a className="btnmain btn btn-default" onClick={this.testFunction}><span className="glyphicon glyphicon-share-alt"></span></a>
                         </div>  
                         <div className="col-xs-12 col-md-12 text-center" id={"imgloadmorecomment"+this.props.id} style={imgloadmorecomment}>
                             <img className="imgloadmore" src="addons/shared_addons/modules/products/img/ezgif2.gif" />
@@ -303,15 +323,15 @@ var LikeButton = React.createClass({
     
     render: function(){
         if(this.state.usercount === 0 || this.state.usercount === 2){
-            var style = {color: "black"};
+            var style = {color: "black",paddingRight:5};
         }
         if(this.state.usercount === 1){
-            var style = {color: "red"};
+            var style = {color: "red",paddingRight:5};
         }
         
         return(
-            <a className="btn btn-default" onClick={this.Likeclick}>
-                <span id={"like"+this.props.pro_id} className="glyphicon glyphicon-heart" style={style}></span>
+            <a className="btnmain btn btn-default" onClick={this.Likeclick}>
+                <span id={"like"+this.props.pro_id} className="glyphicon glyphicon-heart-empty" style={style}></span>
                 <span>{this.state.likecount}</span>
             </a>
         )
@@ -504,16 +524,16 @@ var ReplyBox = React.createClass({
             <div className="commentbox collapse" id={"collapseone"+this.props.comment_id}>
                <a id={"reply"+this.props.comment_id} onClick={this.handleLoadmorereply} style={anchorstyle}> Load older reply...</a> 
                {this.props.reply.map((a)=>{ if(this.props.comment_id == a.reply_id){ return(
-                <div className="well col-xs-12" key={a.id}>
+                <div className="well reply col-xs-12" key={a.id}>
                     <a>
                         <img className="comment-avatar" src="addons/shared_addons/modules/products/img/avartar.jpg" />
                     </a>
                     <div className="asdfghjkl">MinhNguyen:</div>
-                        <div className="col-xs-9">
+                        <div className="">
                         {a.comments}
                         </div>
                         
-                        <div className="commentTime col-xs-9">{
+                        <div className="commentTimeReply">{
                         Date.timeBetween(new Date(parseInt(a.created)), new Date())
                         }</div>
                 </div>
@@ -581,7 +601,7 @@ var ReplyForm = React.createClass({
     render: function(){
       return(
        <form className="commentForm" onSubmit={this.handleSubmitReply}>
-            <div className="commentForm input-group col-xs-12">
+            <div className="commentFormReply input-group col-xs-12">
                 <input 
                 type="text" className="form-control" 
                 placeholder="Write reply ....." 
@@ -795,7 +815,9 @@ var initialState = {
         ajaxcomment: window.location+'/apis/ajaxcomment',
         ajaxreply: window.location+'/apis/ajaxreply',
         ajaxuserdata: window.location+'/apis/ajaxuserdata',
-        ajaxlike: window.location+'/apis/ajaxlike'
+        ajaxlike: window.location+'/apis/ajaxlike',
+        ajaxcommentcount: window.location+"/apis/ajaxcommentcount"
+
      },
     products: [],
     query:{
@@ -818,7 +840,8 @@ var initialState = {
         com_id:''
     },
     user_id:'',
-    like:[]
+    like:[],
+    commentcount:[]
     
 };
 
@@ -917,6 +940,11 @@ var reducer = function(state,action){
                         datareply: action.data
                     }
                 }); break;
+                
+            case 'set_Commentcount' :
+                newState = Object.assign({},state,{
+                    commentcount:action.data
+            });break;
     }
   
     return newState;
@@ -959,6 +987,12 @@ var ProductListDispatch = function(dispatch){
                 type:'set_Like',
                 data: data
             })
+        },
+        setCommentcount: function(data){
+            dispatch({
+                type:'set_Commentcount',
+                data: data
+            })
         }
     }
 };
@@ -994,7 +1028,8 @@ var ProductsState = function(state){
         url: state.url,
         comment: state.comment,
         like: state.like,
-        cat_id: state.query.cat_id
+        cat_id: state.query.cat_id,
+        commentcount: state.commentcount
     }
 };
 var CommentDispatch = function(dispatch){
